@@ -3,14 +3,1538 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AuraESL - Interactive A1 to A2 English Journey</title>
-  <link rel="stylesheet" href="styles.css">
+  <title>AuraESL - Classroom Interactive A1 to A2 English Journey</title>
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <!-- Lucide Icons (CDN) -->
   <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    /* AuraESL Global Stylesheet */
+    /* Built with modern glassmorphism, responsive grids, and clean dark mode typography */
+
+    :root {
+      /* Dark Theme Variables (Default) */
+      --bg-primary: #080c14;
+      --bg-secondary: #0f172a;
+      --card-bg: rgba(30, 41, 59, 0.6);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-purple: #8b5cf6;
+      --accent-purple-glow: rgba(139, 92, 246, 0.35);
+      --accent-blue: #3b82f6;
+      --accent-blue-glow: rgba(59, 130, 246, 0.35);
+      --color-success: #10b981;
+      --color-success-bg: rgba(16, 185, 129, 0.15);
+      --color-error: #f43f5e;
+      --color-error-bg: rgba(244, 63, 94, 0.15);
+      --color-warning: #f59e0b;
+      --color-warning-bg: rgba(245, 158, 11, 0.12);
+      --color-teacher: #ec4899;
+      --color-teacher-bg: rgba(236, 72, 153, 0.1);
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --sidebar-width: 280px;
+      --font-title: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --transition-speed: 0.25s;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Light Theme Override Variables */
+    body.light-theme {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --card-bg: rgba(255, 255, 255, 0.9);
+      --card-border: rgba(0, 0, 0, 0.08);
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      font-size: 15px;
+      line-height: 1.6;
+      overflow: hidden;
+      height: 100vh;
+      transition: background-color var(--transition-speed), color var(--transition-speed);
+    }
+
+    /* Scrollbar styles */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-primary);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 4px;
+    }
+    body.light-theme ::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.15);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Layout Framework */
+    .app-container {
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      width: var(--sidebar-width);
+      background-color: var(--bg-secondary);
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      padding: 24px;
+      flex-shrink: 0;
+      height: 100%;
+      z-index: 10;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .logo-icon {
+      font-size: 24px;
+      filter: drop-shadow(0 0 10px var(--accent-purple));
+    }
+
+    .logo-text {
+      font-family: var(--font-title);
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #a78bfa, #3b82f6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .progress-widget {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 24px;
+    }
+
+    .progress-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .progress-bar-container {
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+      width: 0%;
+      transition: width var(--transition-speed) ease-in-out;
+    }
+
+    .nav-menu {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+    }
+
+    .menu-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-top: 18px;
+      margin-bottom: 6px;
+      padding-left: 8px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 500;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      transition: all var(--transition-speed) ease;
+    }
+
+    .nav-item i {
+      width: 18px;
+      height: 18px;
+      stroke-width: 2px;
+    }
+
+    .nav-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--text-main);
+    }
+
+    .nav-item.active {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      color: white;
+      box-shadow: 0 4px 12px var(--accent-purple-glow);
+    }
+
+    .sidebar-footer {
+      padding-top: 16px;
+      border-top: 1px solid var(--card-border);
+      text-align: center;
+    }
+
+    .footer-note {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* Main Content Area */
+    .main-content {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      height: 100%;
+      position: relative;
+    }
+
+    .content-header {
+      height: 75px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background-color: rgba(8, 12, 20, 0.8);
+      backdrop-filter: blur(10px);
+      z-index: 9;
+      flex-shrink: 0;
+      transition: background-color var(--transition-speed);
+    }
+
+    body.light-theme .content-header {
+      background-color: rgba(255, 255, 255, 0.8);
+    }
+
+    .content-header h1 {
+      font-family: var(--font-title);
+      font-size: 24px;
+      font-weight: 700;
+    }
+
+    /* Student & Classroom Quick Tools Panel in Header */
+    .classroom-controls {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .control-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    body.light-theme .control-btn {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .control-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .control-btn.active {
+      background: var(--accent-purple);
+      color: white;
+      border-color: transparent;
+    }
+
+    .accessibility-box {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .acc-btn {
+      background: none;
+      border: none;
+      color: var(--text-main);
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .acc-btn:hover {
+      background: rgba(255,255,255,0.08);
+    }
+
+    .acc-btn:not(:last-child) {
+      border-right: 1px solid var(--card-border);
+    }
+
+    .user-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-badge {
+      font-family: var(--font-title);
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    .status-badge.A1 {
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: var(--accent-blue);
+    }
+
+    .status-badge.A2 {
+      background: rgba(139, 92, 246, 0.15);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      color: var(--accent-purple);
+    }
+
+    /* Dynamic Tab Screen container */
+    .tab-screen {
+      flex-grow: 1;
+      padding: 32px;
+      overflow-y: auto;
+      display: none;
+      animation: fadeIn 0.4s ease-out forwards;
+    }
+
+    .tab-screen.active {
+      display: block;
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* HERO CARD on Dashboard */
+    .hero-card {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 1px solid var(--card-border);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    body.light-theme .hero-card {
+      background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+    }
+
+    .hero-content {
+      max-width: 60%;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-content h2 {
+      font-family: var(--font-title);
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .hero-content p {
+      color: var(--text-muted);
+      font-size: 15px;
+      margin-bottom: 24px;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 12px;
+    }
+
+    .hero-illustration {
+      font-size: 110px;
+      user-select: none;
+      filter: drop-shadow(0 0 25px rgba(255,255,255,0.08));
+      position: relative;
+      z-index: 2;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+      100% { transform: translateY(0px); }
+    }
+
+    /* Buttons */
+    .btn {
+      font-family: var(--font-body);
+      font-size: 14px;
+      font-weight: 600;
+      padding: 10px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      color: white;
+      box-shadow: 0 4px 12px var(--accent-purple-glow);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px var(--accent-purple-glow);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+    }
+
+    body.light-theme .btn-secondary {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .btn-success {
+      background: var(--color-success);
+      color: white;
+    }
+
+    .btn-success:hover {
+      transform: translateY(-2px);
+    }
+
+    /* Section Title */
+    .section-title {
+      font-family: var(--font-title);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 20px;
+      position: relative;
+      padding-left: 12px;
+    }
+
+    .section-title::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 4px;
+      bottom: 4px;
+      width: 4px;
+      background: var(--accent-purple);
+      border-radius: 2px;
+    }
+
+    /* Grids and Cards */
+    .grid-layout {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .feature-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      backdrop-filter: blur(12px);
+      transition: all var(--transition-speed) ease;
+      box-shadow: var(--shadow);
+    }
+
+    .feature-card.pointer {
+      cursor: pointer;
+    }
+
+    .feature-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-icon {
+      font-size: 32px;
+      margin-bottom: 8px;
+    }
+
+    .feature-card h4 {
+      font-family: var(--font-title);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      color: var(--text-muted);
+      flex-grow: 1;
+    }
+
+    .card-footer-progress {
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .card-footer-progress span {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .mini-bar {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    body.light-theme .mini-bar {
+      background: rgba(0, 0, 0, 0.08);
+    }
+
+    .mini-fill {
+      height: 100%;
+      background: var(--accent-blue);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Split Pane Layouts (Speaking and Grammar Library) */
+    .interactive-split {
+      display: flex;
+      gap: 24px;
+      height: calc(100vh - 200px);
+      overflow: hidden;
+    }
+
+    .side-panel {
+      width: 320px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: var(--shadow);
+    }
+
+    .side-title {
+      padding: 16px;
+      border-bottom: 1px solid var(--card-border);
+      font-family: var(--font-title);
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .item-list {
+      flex-grow: 1;
+      overflow-y: auto;
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .list-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 12px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      background: transparent;
+      width: 100%;
+      text-align: left;
+    }
+
+    .list-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+    body.light-theme .list-item:hover {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .list-item.active {
+      background: rgba(139, 92, 246, 0.1);
+      border-color: rgba(139, 92, 246, 0.3);
+    }
+
+    .list-item .item-title {
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text-main);
+    }
+
+    .list-item .item-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .list-item.completed::after {
+      content: '✓';
+      color: var(--color-success);
+      font-weight: bold;
+      float: right;
+      margin-left: auto;
+    }
+
+    /* Display Panel (Detail Panel) */
+    .display-panel {
+      flex-grow: 1;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      overflow-y: auto;
+      padding: 32px;
+      position: relative;
+      box-shadow: var(--shadow);
+    }
+
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 64px;
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-family: var(--font-title);
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    /* Turkish Side Note Panel styling */
+    .turkish-note {
+      display: block;
+      background: var(--color-warning-bg);
+      border-left: 4px solid var(--color-warning);
+      border-radius: 0 8px 8px 0;
+      padding: 12px 16px;
+      margin: 16px 0;
+      font-size: 13.5px;
+      color: #ffedd5;
+      transition: all 0.3s ease;
+    }
+
+    body.light-theme .turkish-note {
+      background: #fffbeb;
+      color: #92400e;
+    }
+
+    .turkish-note.hidden-note {
+      display: none !important;
+    }
+
+    .turkish-note strong {
+      color: #fbbf24;
+    }
+    body.light-theme .turkish-note strong {
+      color: #d97706;
+    }
+
+    /* Classroom Teacher Instructions Box */
+    .teacher-note {
+      display: none;
+      background: var(--color-teacher-bg);
+      border: 1.5px dashed var(--color-teacher);
+      border-radius: 8px;
+      padding: 14px 18px;
+      margin: 16px 0;
+      font-size: 13.5px;
+      color: var(--text-main);
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .teacher-note.active {
+      display: block !important;
+    }
+
+    .teacher-note strong {
+      color: var(--color-teacher);
+    }
+
+    /* Lesson Cards (Course Phase layout) */
+    .lesson-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .lesson-header-card {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .lesson-header-card h2 {
+      font-family: var(--font-title);
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .lesson-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+
+    .card-group-title {
+      font-family: var(--font-title);
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* Interactive Vocabulary Flip Cards instead of static tables */
+    .vocab-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .vocab-card {
+      perspective: 1000px;
+      cursor: pointer;
+      height: 125px;
+    }
+
+    .vocab-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+      transform-style: preserve-3d;
+      box-shadow: var(--shadow);
+      border-radius: 12px;
+    }
+
+    .vocab-card.flipped .vocab-card-inner {
+      transform: rotateY(180deg);
+    }
+
+    .vocab-card-front, .vocab-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      border: 1px solid var(--card-border);
+    }
+
+    .vocab-card-front {
+      background: var(--bg-secondary);
+      color: var(--text-main);
+    }
+
+    .vocab-card-front .word {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-blue);
+    }
+
+    .vocab-card-front .hint {
+      font-size: 10px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .vocab-card-back {
+      background: var(--card-bg);
+      transform: rotateY(180deg);
+      justify-content: space-between;
+    }
+
+    .vocab-card-back .meaning {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--color-success);
+    }
+
+    .vocab-card-back .example {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      font-style: italic;
+      line-height: 1.3;
+    }
+
+    /* Grammar Block */
+    .grammar-block {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    body.light-theme .grammar-block {
+      background: #ffffff;
+    }
+
+    .grammar-block h5 {
+      font-family: var(--font-title);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--accent-purple);
+      margin-bottom: 8px;
+    }
+
+    .grammar-examples {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .example-item {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 10px 14px;
+      border-radius: 6px;
+      border-left: 2px solid var(--accent-purple);
+    }
+
+    body.light-theme .example-item {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .example-eng {
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .example-tr {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* Exercises Layout */
+    .exercise-card {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      box-shadow: var(--shadow);
+    }
+
+    body.light-theme .exercise-card {
+      background: #ffffff;
+    }
+
+    .exercise-question {
+      font-weight: 600;
+      font-size: 15px;
+    }
+
+    /* Quiz Option list */
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--text-main);
+      text-align: left;
+      cursor: pointer;
+      font-family: var(--font-body);
+      transition: all 0.2s ease;
+      width: 100%;
+    }
+
+    body.light-theme .option-btn {
+      background: rgba(0, 0, 0, 0.02);
+    }
+
+    .option-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .option-btn.selected {
+      border-color: var(--accent-purple);
+      background: rgba(139, 92, 246, 0.08);
+    }
+
+    .option-btn.correct {
+      border-color: var(--color-success) !important;
+      background: var(--color-success-bg) !important;
+      color: white;
+    }
+
+    .option-btn.incorrect {
+      border-color: var(--color-error) !important;
+      background: var(--color-error-bg) !important;
+      color: white;
+    }
+
+    /* Input Fields (Fill-in-the-blank) */
+    .input-answer-container {
+      display: flex;
+      gap: 12px;
+    }
+
+    .input-answer {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 10px 16px;
+      color: var(--text-main);
+      font-family: var(--font-body);
+      flex-grow: 1;
+    }
+
+    body.light-theme .input-answer {
+      background: #ffffff;
+    }
+
+    .input-answer:focus {
+      outline: none;
+      border-color: var(--accent-purple);
+    }
+
+    /* Word Order Puzzle Layout */
+    .word-puzzle {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .puzzle-slots {
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px dashed var(--card-border);
+      border-radius: 8px;
+      min-height: 50px;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    body.light-theme .puzzle-slots {
+      background: rgba(0, 0, 0, 0.04);
+    }
+
+    .puzzle-words {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 10px 0;
+    }
+
+    .word-pill {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--card-border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-weight: 500;
+      user-select: none;
+      transition: all 0.15s ease;
+    }
+
+    body.light-theme .word-pill {
+      background: rgba(0, 0, 0, 0.05);
+    }
+
+    .word-pill:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: scale(1.05);
+    }
+
+    .word-pill.used {
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    /* Exercise Feedback Text */
+    .exercise-feedback {
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 13.5px;
+      display: none;
+    }
+
+    .exercise-feedback.correct {
+      background: var(--color-success-bg);
+      border-left: 3px solid var(--color-success);
+      display: block;
+    }
+
+    .exercise-feedback.incorrect {
+      background: var(--color-error-bg);
+      border-left: 3px solid var(--color-error);
+      display: block;
+    }
+
+    /* Speaking console card */
+    .speaking-recording-area {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      background: rgba(0, 0, 0, 0.2);
+      border-radius: 16px;
+      gap: 16px;
+      flex-grow: 1;
+    }
+
+    body.light-theme .speaking-recording-area {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    /* Microphone button */
+    .mic-btn-container {
+      position: relative;
+    }
+
+    .mic-btn {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-purple), var(--accent-blue));
+      border: none;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 20px var(--accent-purple-glow);
+      transition: all 0.3s ease;
+      z-index: 2;
+      position: relative;
+    }
+
+    .mic-btn:hover {
+      transform: scale(1.05);
+    }
+
+    .mic-btn.recording {
+      background: var(--color-error);
+      box-shadow: 0 0 25px rgba(244, 63, 94, 0.6);
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    .recording-ripple {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 50%;
+      border: 2px solid var(--color-error);
+      animation: ripple 1.5s infinite;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    @keyframes ripple {
+      0% { transform: scale(1); opacity: 0.8; }
+      100% { transform: scale(1.8); opacity: 0; }
+    }
+
+    .speaking-status {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    /* Audio waves animation */
+    .audio-waves {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      height: 24px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .audio-waves.active {
+      opacity: 1;
+    }
+
+    .wave-bar {
+      width: 3px;
+      height: 5px;
+      background: var(--color-error);
+      border-radius: 3px;
+    }
+
+    .audio-waves.active .wave-bar:nth-child(1) { animation: wave 0.8s ease-in-out infinite alternate; }
+    .audio-waves.active .wave-bar:nth-child(2) { animation: wave 0.5s ease-in-out infinite alternate 0.1s; }
+    .audio-waves.active .wave-bar:nth-child(3) { animation: wave 0.9s ease-in-out infinite alternate 0.2s; }
+    .audio-waves.active .wave-bar:nth-child(4) { animation: wave 0.6s ease-in-out infinite alternate 0.15s; }
+    .audio-waves.active .wave-bar:nth-child(5) { animation: wave 0.7s ease-in-out infinite alternate 0.3s; }
+
+    @keyframes wave {
+      0% { height: 4px; }
+      100% { height: 24px; }
+    }
+
+    /* Sample answers section */
+    .speaking-comparison {
+      margin-top: 16px;
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .comparison-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .comparison-title {
+      font-family: var(--font-title);
+      font-weight: 700;
+      color: var(--color-success);
+    }
+
+    .btn-tts {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--color-success);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-tts:hover {
+      background: rgba(16, 185, 129, 0.25);
+    }
+
+    .sample-answer-text {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      background: rgba(0, 0, 0, 0.15);
+      padding: 10px 14px;
+      border-radius: 6px;
+      border-left: 3px solid var(--color-success);
+    }
+
+    body.light-theme .sample-answer-text {
+      background: rgba(0,0,0,0.03);
+    }
+
+    .sample-translation {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-style: italic;
+    }
+
+    /* Sub-Tab Navigation for If Clauses */
+    .sub-tab-nav {
+      display: flex;
+      border-bottom: 1px solid var(--card-border);
+      gap: 8px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+    }
+
+    .sub-tab {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-family: var(--font-body);
+      font-weight: 600;
+      padding: 12px 18px;
+      cursor: pointer;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s ease;
+    }
+
+    .sub-tab:hover {
+      color: var(--text-main);
+    }
+
+    .sub-tab.active {
+      color: var(--accent-purple);
+      border-bottom-color: var(--accent-purple);
+    }
+
+    .subtab-content {
+      display: none;
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+
+    .subtab-content.active {
+      display: block;
+    }
+
+    /* Grammar Table styling (e.g. Pronouns or If-Clauses comparison) */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+      background: rgba(0,0,0,0.15);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    body.light-theme table {
+      background: rgba(0,0,0,0.02);
+    }
+
+    th, td {
+      padding: 12px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    th {
+      background: rgba(255,255,255,0.03);
+      font-family: var(--font-title);
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .grammar-formula {
+      background: rgba(139, 92, 246, 0.08);
+      border: 1px dashed rgba(139, 92, 246, 0.4);
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-size: 15px;
+      color: var(--text-main);
+      text-align: center;
+      font-family: monospace;
+    }
+
+    /* Reference Library detailed cards */
+    .lib-detail-card h2 {
+      font-family: var(--font-title);
+      font-size: 22px;
+      color: var(--accent-purple);
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 8px;
+    }
+
+    .lib-detail-card .badge {
+      background: rgba(139, 92, 246, 0.15);
+      color: var(--accent-purple);
+      border: 1px solid rgba(139, 92, 246, 0.3);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      display: inline-block;
+    }
+
+    /* Quiz grading result */
+    .quiz-result-box {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 24px;
+    }
+
+    .quiz-result-box.hidden {
+      display: none;
+    }
+
+    .divider {
+      border: 0;
+      height: 1px;
+      background: var(--card-border);
+      margin: 16px 0;
+    }
+
+    .bold {
+      font-weight: 700;
+    }
+
+    /* Classroom Floating Student Notepad Widget */
+    .notepad-widget {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+    }
+
+    .notepad-toggle {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      background: var(--accent-purple);
+      color: white;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      transition: all 0.25s ease;
+    }
+
+    .notepad-toggle:hover {
+      transform: scale(1.08);
+    }
+
+    .notepad-body {
+      width: 320px;
+      height: 380px;
+      background: var(--bg-secondary);
+      border: 1.5px solid var(--card-border);
+      border-radius: 12px;
+      margin-bottom: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+    body.light-theme .notepad-body {
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .notepad-body.active {
+      display: flex;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .notepad-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .notepad-header h4 {
+      font-family: var(--font-title);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .notepad-textarea {
+      flex-grow: 1;
+      width: 100%;
+      border: none;
+      background: transparent;
+      padding: 16px;
+      color: var(--text-main);
+      font-family: inherit;
+      font-size: 13.5px;
+      resize: none;
+      outline: none;
+    }
+
+    .notepad-actions {
+      padding: 12px 16px;
+      border-top: 1px solid var(--card-border);
+      display: flex;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .notepad-save-indicator {
+      font-size: 11px;
+      color: var(--color-success);
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Toast Notification for progress / saves */
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-50px);
+      background: rgba(16, 185, 129, 0.95);
+      color: white;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 600;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* Responsiveness overrides */
+    @media(max-width: 1024px) {
+      .app-container {
+        flex-direction: column;
+      }
+      .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid var(--card-border);
+      }
+      .interactive-split {
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+      }
+      .side-panel {
+        width: 100%;
+        height: 250px;
+      }
+      body {
+        overflow-y: auto;
+        height: auto;
+      }
+      .hero-card {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 24px;
+      }
+      .hero-content {
+        max-width: 100%;
+      }
+      .hero-illustration {
+        display: none;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="app-container">
@@ -72,13 +1596,39 @@
 
     <!-- Main Content Area -->
     <main class="main-content">
-      <!-- Top header bar -->
+      <!-- Top header bar with quick classroom settings -->
       <header class="content-header">
         <h1 id="page-title">Dashboard</h1>
-        <div class="user-status">
-          <div class="status-badge A1">A1</div>
-          <div class="status-arrow">➡️</div>
-          <div class="status-badge A2">A2</div>
+        
+        <div class="classroom-controls">
+          <!-- Text size adjustment -->
+          <div class="accessibility-box" title="Adjust Text Size">
+            <button class="acc-btn" onclick="changeFontSize('decrease')" title="Decrease Text Size">A-</button>
+            <button class="acc-btn" onclick="changeFontSize('increase')" title="Increase Text Size">A+</button>
+          </div>
+
+          <!-- Toggle Turkish Side Notes -->
+          <button class="control-btn active" id="btn-toggle-tr-notes" onclick="toggleTurkishNotes()" title="Toggle Turkish side explanations">
+            <i data-lucide="languages"></i>
+            <span id="tr-notes-status">Turkish: ON</span>
+          </button>
+
+          <!-- Toggle Teacher Mode (talking points, classroom activities) -->
+          <button class="control-btn" id="btn-toggle-teacher-mode" onclick="toggleTeacherMode()" title="Toggle Teacher guides & classroom plans">
+            <i data-lucide="graduation-cap"></i>
+            <span>Teacher Mode</span>
+          </button>
+
+          <!-- Dark / Light theme toggle -->
+          <button class="control-btn" onclick="toggleTheme()" title="Switch Light/Dark Mode">
+            <i data-lucide="sun-moon"></i>
+          </button>
+
+          <div class="user-status">
+            <div class="status-badge A1">A1</div>
+            <div class="status-arrow">➡️</div>
+            <div class="status-badge A2">A2</div>
+          </div>
         </div>
       </header>
 
@@ -89,13 +1639,23 @@
         <div class="hero-card">
           <div class="hero-content">
             <h2>Accelerate Your English from A1 to A2</h2>
-            <p>Welcome to AuraESL! This application is designed to take you from beginner (A1) to elementary (A2) in just 30 minutes of focused interactive exercises and speaking practice. Includes detailed lessons on If Clause Type 0 and 1, with Turkish explanations to support your journey.</p>
+            <p>Welcome to AuraESL! This classroom-optimized single page application is built to guide students from beginner (A1) to elementary (A2) level in 30 minutes of interactive drills. Learn key grammar rules, vocabulary flashcards, speaking practice, and dedicated If-Clause Type 0 & 1 lessons.</p>
             <div class="hero-buttons">
-              <button class="btn btn-primary" onclick="switchTab('course-phase1')">Start Journey</button>
-              <button class="btn btn-secondary" onclick="switchTab('if-clauses')">Study If Clauses</button>
+              <button class="btn btn-primary" onclick="switchTab('course-phase1')">Start Learning</button>
+              <button class="btn btn-secondary" onclick="resetAllProgress()">Reset Progress</button>
             </div>
           </div>
           <div class="hero-illustration">🎯</div>
+        </div>
+
+        <!-- Teacher notice visible on dashboard when teacher mode is toggled -->
+        <div class="teacher-note" id="dashboard-teacher-notice">
+          <strong>👩‍🏫 Classroom Guide for Teachers:</strong>
+          <ul>
+            <li>This app is optimized for projector screens. Use the <strong>A+ / A-</strong> text options to make it visible from the back row.</li>
+            <li>Switch to <strong>Light Theme</strong> if the projector contrast is low.</li>
+            <li>Encourage students to click vocabulary cards to flip them. Use the <strong>Speaking Drills</strong> for active classroom pair-work!</li>
+          </ul>
         </div>
 
         <h3 class="section-title">Your Progress Map</h3>
@@ -103,7 +1663,7 @@
           <div class="feature-card pointer" onclick="switchTab('course-phase1')">
             <div class="card-icon">🌱</div>
             <h4>Phase 1: A1 Foundations</h4>
-            <p>Learn to introduce yourself and describe daily routines.</p>
+            <p>Introduce yourself, use 'to be', and speak about simple present daily routines.</p>
             <div class="card-footer-progress">
               <span id="p1-percent">0% Done</span>
               <div class="mini-bar"><div id="p1-bar" class="mini-fill" style="width: 0%"></div></div>
@@ -112,7 +1672,7 @@
           <div class="feature-card pointer" onclick="switchTab('course-phase2')">
             <div class="card-icon">⚡</div>
             <h4>Phase 2: Transition</h4>
-            <p>Understand actions happening now and simple modal 'can'.</p>
+            <p>Learn actions happening now (Continuous) and using modal 'can' for abilities.</p>
             <div class="card-footer-progress">
               <span id="p2-percent">0% Done</span>
               <div class="mini-bar"><div id="p2-bar" class="mini-fill" style="width: 0%"></div></div>
@@ -121,7 +1681,7 @@
           <div class="feature-card pointer" onclick="switchTab('course-phase3')">
             <div class="card-icon">🏆</div>
             <h4>Phase 3: A2 Level</h4>
-            <p>Talk about past events and describe future plans.</p>
+            <p>Master regular/irregular Past Simple verbs and plans with 'going to'.</p>
             <div class="card-footer-progress">
               <span id="p3-percent">0% Done</span>
               <div class="mini-bar"><div id="p3-bar" class="mini-fill" style="width: 0%"></div></div>
@@ -130,7 +1690,7 @@
           <div class="feature-card pointer" onclick="switchTab('conditional-tenses')">
             <div class="card-icon">🔥</div>
             <h4>Conditionals Prep</h4>
-            <p>12 Interactive speaking drills for conditional tenses.</p>
+            <p>12 Interactive speaking drills mapping necessary tenses for conditionals.</p>
             <div class="card-footer-progress">
               <span id="ct-percent">0% Done</span>
               <div class="mini-bar"><div id="ct-bar" class="mini-fill" style="width: 0%"></div></div>
@@ -139,7 +1699,7 @@
           <div class="feature-card pointer" onclick="switchTab('if-clauses')">
             <div class="card-icon">🔱</div>
             <h4>If Clauses Type 0 & 1</h4>
-            <p>Learn Type 0 & 1 from scratch with detailed exercises.</p>
+            <p>Learn Type 0 (laws) and Type 1 (predictions) with interactive grammar guides.</p>
             <div class="card-footer-progress">
               <span id="if-percent">0% Done</span>
               <div class="mini-bar"><div id="if-bar" class="mini-fill" style="width: 0%"></div></div>
@@ -148,7 +1708,7 @@
           <div class="feature-card pointer" onclick="switchTab('grammar-library')">
             <div class="card-icon">📚</div>
             <h4>Grammar Library</h4>
-            <p>10 Comprehensive ESL grammar topics with Turkish notes.</p>
+            <p>Comprehensive reference guides for 10 core A1/A2 grammar topics.</p>
             <div class="card-footer-progress">
               <span id="lib-percent">0% Viewed</span>
               <div class="mini-bar"><div id="lib-bar" class="mini-fill" style="width: 0%"></div></div>
@@ -160,19 +1720,19 @@
       <!-- 2. COURSE PHASES (1, 2, 3) -->
       <section id="tab-course-phase1" class="tab-screen">
         <div class="lesson-layout" id="course-phase1-container">
-          <!-- Dynamically filled by app.js -->
+          <!-- Dynamically filled -->
         </div>
       </section>
       
       <section id="tab-course-phase2" class="tab-screen">
         <div class="lesson-layout" id="course-phase2-container">
-          <!-- Dynamically filled by app.js -->
+          <!-- Dynamically filled -->
         </div>
       </section>
 
       <section id="tab-course-phase3" class="tab-screen">
         <div class="lesson-layout" id="course-phase3-container">
-          <!-- Dynamically filled by app.js -->
+          <!-- Dynamically filled -->
         </div>
       </section>
 
@@ -184,6 +1744,11 @@
             <p id="ct-intro-text"></p>
           </div>
           
+          <!-- Teacher Note -->
+          <div class="teacher-note" data-teacher-point="tenses">
+            <strong>👩‍🏫 Classroom Tip:</strong> Have students take turns reading the questions aloud. Have them guess the tense used in the condition ('If' clause) before showing the model answer.
+          </div>
+
           <div class="interactive-split">
             <!-- Left panel: Question Selection -->
             <div class="side-panel">
@@ -214,6 +1779,11 @@
             <button class="sub-tab" data-subtab="if-type1">Type 1 (Possibilities)</button>
             <button class="sub-tab" data-subtab="if-comparison">Type 0 vs Type 1</button>
             <button class="sub-tab" data-subtab="if-quiz">Interactive Quiz</button>
+          </div>
+
+          <!-- Teacher note in If Clause -->
+          <div class="teacher-note" data-teacher-point="if-clauses">
+            <strong>👩‍🏫 Grammar Drilling Activity:</strong> Use the "Type 0 vs Type 1" comparison table to demonstrate why scientific facts do not use "will" in the result. Make students create one original Type 0 sentence and one Type 1 sentence on the board.
           </div>
 
           <div id="subtab-if-intro" class="subtab-content active">
@@ -250,6 +1820,11 @@
       <!-- 5. GRAMMAR LIBRARY -->
       <section id="tab-grammar-library" class="tab-screen">
         <div class="lesson-layout">
+          
+          <div class="teacher-note" data-teacher-point="grammar-lib">
+            <strong>👩‍🏫 Classroom Reference Guide:</strong> Ask students to select topics they struggled with during the course sections. Encourage them to use the built-in Text-To-Speech pronunciation tools for the examples.
+          </div>
+
           <div class="interactive-split">
             <!-- Left panel: Topics list -->
             <div class="side-panel">
@@ -272,12 +1847,1972 @@
     </main>
   </div>
 
+  <!-- Classroom Floating Notepad Tool -->
+  <div class="notepad-widget">
+    <div class="notepad-body" id="notepad-container">
+      <div class="notepad-header">
+        <h4>✏️ Lesson Notes & Diary</h4>
+        <button onclick="toggleNotepad()" style="background:none; border:none; color:var(--text-muted); cursor:pointer;">✕</button>
+      </div>
+      <textarea class="notepad-textarea" id="student-notepad" placeholder="Write down new words, sentences, or rules you learn today..." oninput="saveStudentNotes()"></textarea>
+      <div class="notepad-actions">
+        <div class="notepad-save-indicator" id="notepad-save-indicator">
+          <i data-lucide="check" style="width:12px; height:12px;"></i> Saved to Browser
+        </div>
+        <button class="btn" style="padding: 4px 8px; font-size: 11px; background: rgba(59, 130, 246, 0.2); color: var(--accent-blue);" onclick="exportNotes()">Export Notes</button>
+      </div>
+    </div>
+    <button class="notepad-toggle" onclick="toggleNotepad()" title="Open Personal Notepad">
+      <i data-lucide="edit-3" id="notepad-icon" style="width:22px; height:22px;"></i>
+    </button>
+  </div>
+
+  <!-- Toast Toast Notification container -->
+  <div class="toast" id="toast-notification">Saved!</div>
+
   <!-- Audio feedback effects -->
   <audio id="audio-correct" src="" preload="auto"></audio>
   <audio id="audio-incorrect" src="" preload="auto"></audio>
 
-  <!-- Load Scripts -->
-  <script src="content.js"></script>
-  <script src="app.js"></script>
+  <script>
+    // ==========================================
+    // 1. DATA FILE CONTENT (Inlined content.js)
+    // ==========================================
+
+    const courseContent = {
+      phases: [
+        {
+          id: "phase1",
+          title: "Phase 1: A1 Foundations (A1 Temelleri)",
+          duration: "10 mins",
+          difficulty: "A1 (Beginner / Başlangıç)",
+          intro: `Welcome to the first phase! We will cover the absolute essentials to get you started. In A1, you learn how to describe yourself, ask basic questions, and use the present simple tense for daily routines. 
+          <br><br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> İngilizce öğrenmeye başlarken en önemli adım 'to be' (olmak) fiilidir. Türkçe'deki '-dir/-dır' ekine karşılık gelir. (I am a student = Ben bir öğrenciyim).</span>`,
+          vocabulary: [
+            { word: "Introduce", meaning: "Tanıtmak", example: "Let me introduce myself." },
+            { word: "Routine", meaning: "Rutin / Günlük işler", example: "My daily routine is simple." },
+            { word: "Occupation", meaning: "Meslek", example: "What is your occupation?" },
+            { word: "Habit", meaning: "Alışkanlık", example: "Smoking is a bad habit." }
+          ],
+          grammarPoints: [
+            {
+              title: "The Verb 'To Be' (Am/Is/Are)",
+              explanation: "Used to describe states, feelings, occupations, and identities. We use 'am' for I, 'is' for He/She/It, and 'are' for We/You/They.",
+              turkishNote: "Durum bildirirken kullanılır. Eylem (koşmak, okumak vb.) içermez.",
+              examples: [
+                { english: "I am a teacher.", turkish: "Ben bir öğretmenim." },
+                { english: "She is happy today.", turkish: "O bugün mutlu." },
+                { english: "They are at school.", turkish: "Onlar okulda." }
+              ]
+            },
+            {
+              title: "Present Simple Tense (Geniş Zaman)",
+              explanation: "Used for general truths, routines, and habits. Add '-s' to the verb for singular third person (He/She/It). Use 'do/does' for questions and 'don't/doesn't' for negatives.",
+              turkishNote: "Sürekli yaptığımız işleri ve genel doğruları anlatırken kullanırız. He/She/It öznelerinde fiile '-s' takısı gelir.",
+              examples: [
+                { english: "I work every day.", turkish: "Her gün çalışırım." },
+                { english: "He plays tennis on Saturdays.", turkish: "O, Cumartesi günleri tenis oynar." },
+                { english: "Do you drink coffee?", turkish: "Kahve içer misin?" }
+              ]
+            }
+          ],
+          exercises: [
+            {
+              id: "ex1_1",
+              type: "multiple-choice",
+              question: "Choose the correct verb form: She ___ (live) in London.",
+              options: ["live", "lives", "living", "lived"],
+              answer: "lives",
+              explanation: "For singular third-person (She) in Present Simple, we add '-s' to the verb. (O, Londra'da yaşar.)"
+            },
+            {
+              id: "ex1_2",
+              type: "fill-in-the-blank",
+              question: "Complete the sentence with am, is, or are: They ___ tired after the long journey.",
+              answer: "are",
+              explanation: "We use 'are' with the subject 'They'. (Onlar uzun yolculuktan sonra yorgunlar.)"
+            },
+            {
+              id: "ex1_3",
+              type: "word-order",
+              question: "Arrange the words to make a correct sentence: [often / coffee / drinks / she / in the morning]",
+              words: ["she", "often", "drinks", "coffee", "in the morning"],
+              answer: "she often drinks coffee in the morning",
+              explanation: "Frequency adverbs (often) come before the main verb (drinks) in the Present Simple. (Sabahları sık sık kahve içer.)"
+            }
+          ],
+          speaking: [
+            {
+              id: "sp1_1",
+              prompt: "Introduce yourself. Speak about your name, age, job, and where you live.",
+              sampleAnswer: "Hello, my name is John. I am twenty-five years old. I am an engineer, and I live in Istanbul, Turkey.",
+              translation: "Merhaba, benim adım John. Yirmi beş yaşındayım. Ben bir mühendisim ve İstanbul, Türkiye'de yaşıyorum.",
+              grammarNote: "Use the Present Simple and 'to be' (I am, I live)."
+            },
+            {
+              id: "sp1_2",
+              prompt: "Describe your typical morning routine.",
+              sampleAnswer: "I wake up at seven o'clock. I wash my face, drink a glass of water, and eat breakfast at seven thirty. Then, I go to work.",
+              translation: "Saat yedi gibi uyanırım. Yüzümü yıkarım, bir bardak su içerim ve yedi otuzda kahvaltı yaparım. Sonra işe giderim.",
+              grammarNote: "Use sequence markers like 'Then' or 'Next' along with simple present verbs."
+            }
+          ]
+        },
+        {
+          id: "phase2",
+          title: "Phase 2: A1-A2 Transition (Geçiş Aşaması)",
+          duration: "10 mins",
+          difficulty: "A1-A2 (Elementary / Temel Seviye)",
+          intro: `This phase builds a bridge between A1 and A2. We introduce actions happening right now (Present Continuous), how to express abilities (Modal 'can'), and describing locations/places.
+          <br><br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> Şimdiki zaman (Present Continuous) yaparken yardımcı fiil 'am/is/are' ile ana fiile '-ing' takısını eklemeyi unutmayın. Türkçe'deki '-yor' ekidir. (I am reading = Okuyorum).</span>`,
+          vocabulary: [
+            { word: "Ability", meaning: "Yetenek / Beceri", example: "She has the ability to speak three languages." },
+            { word: "Current", meaning: "Şu anki / Mevcut", example: "What is your current location?" },
+            { word: "Permission", meaning: "İzin", example: "You need permission to enter this room." },
+            { word: "Describe", meaning: "Tarif etmek / Tanımlamak", example: "Can you describe the city?" }
+          ],
+          grammarPoints: [
+            {
+              title: "Present Continuous Tense (Şimdiki Zaman)",
+              explanation: "Used for actions happening right now, at the moment of speaking. Structure: subject + am/is/are + verb-ing.",
+              turkishNote: "Konuşma anında gerçekleşen eylemler. Ayrıca geçici durumlar için de kullanılır.",
+              examples: [
+                { english: "I am writing an email right now.", turkish: "Şu anda bir e-posta yazıyorum." },
+                { english: "What are you doing at the moment?", turkish: "Şu anda ne yapıyorsun?" },
+                { english: "It is raining outside.", turkish: "Dışarıda yağmur yağıyor." }
+              ]
+            },
+            {
+              title: "Modal Verb 'Can' (Ebilmek / Yetenek)",
+              explanation: "Used to express ability, permission, or possibility. Followed by the base form of the verb (without 'to').",
+              turkishNote: "Yetenek veya izin bildirir. Olumsuzu 'cannot' veya kısaca 'can't' şeklindedir. Kendinden sonraki fiil yalın kalır.",
+              examples: [
+                { english: "I can speak English well.", turkish: "İyi İngilizce konuşabilirim." },
+                { english: "Can I open the window?", turkish: "Pencereyi açabilir miyim? (İzin)" },
+                { english: "He cannot swim fast.", turkish: "O hızlı yüzemez." }
+              ]
+            }
+          ],
+          exercises: [
+            {
+              id: "ex2_1",
+              type: "multiple-choice",
+              question: "Choose the correct sentence: Look! The bus ___.",
+              options: ["is coming", "comes", "coming", "are coming"],
+              answer: "is coming",
+              explanation: "'Look!' indicates the action is happening right now, requiring Present Continuous. (Bak! Otobüs geliyor.)"
+            },
+            {
+              id: "ex2_2",
+              type: "fill-in-the-blank",
+              question: "Complete with the modal verb: Children ___ (not) swim here; it is dangerous.",
+              answer: "cannot",
+              explanation: "Expresses inability or prohibition. 'can't' or 'cannot' are correct. (Çocuklar burada yüzemez; tehlikelidir.)"
+            },
+            {
+              id: "ex2_3",
+              type: "word-order",
+              question: "Arrange the words: [you / what / doing / are / at the moment / ?]",
+              words: ["what", "are", "you", "doing", "at the moment", "?"],
+              answer: "what are you doing at the moment ?",
+              explanation: "Question structure in Present Continuous: Question word + am/is/are + subject + verb-ing. (Şu anda ne yapıyorsun?)"
+            }
+          ],
+          speaking: [
+            {
+              id: "sp2_1",
+              prompt: "Look around your room or imagine a place. Describe what is happening right now using Present Continuous.",
+              sampleAnswer: "At the moment, I am sitting at my desk. Outside, the birds are singing, and a dog is barking in the street. My brother is watching television in the other room.",
+              translation: "Şu anda masamda oturuyorum. Dışarıda kuşlar ötüyor ve sokakta bir köpek havlıyor. Kardeşim diğer odada televizyon izliyor.",
+              grammarNote: "Ensure you use 'am/is/are + verb-ing' correctly for all subjects."
+            },
+            {
+              id: "sp2_2",
+              prompt: "Talk about three things you can do well, and two things you cannot do.",
+              sampleAnswer: "I can play the guitar, I can cook delicious Italian food, and I can speak English. However, I cannot drive a car, and I cannot swim very fast.",
+              translation: "Gitar çalabilirim, lezzetli İtalyan yemekleri pişirebilirim ve İngilizce konuşabilirim. Ancak, araba süremem ve çok hızlı yüzemem.",
+              grammarNote: "Keep the verb after 'can' / 'cannot' in its pure base form."
+            }
+          ]
+        },
+        {
+          id: "phase3",
+          title: "Phase 3: A2 Consolidation (A2 Yetkinlik)",
+          duration: "10 mins",
+          difficulty: "A2 (Waystage / İleri Temel Seviye)",
+          intro: `Welcome to the final phase! To reach the A2 level, you need to confidently talk about past events (Past Simple), compare things (Comparatives), and make plans for the future (Going to).
+          <br><br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> Geçmiş zamanı (Past Simple) yaparken düzenli fiillere '-ed' ekleriz (work -> worked), ancak düzensiz fiiller tamamen değişir (go -> went). Bunları ezberlemek önemlidir.</span>`,
+          vocabulary: [
+            { word: "Compare", meaning: "Karşılaştırmak", example: "Compare these two cities." },
+            { word: "Experience", meaning: "Deneyim / Tecrübe", example: "I have two years of work experience." },
+            { word: "Intent", meaning: "Niyet / Amaç", example: "My intent is to improve my pronunciation." },
+            { word: "Yesterday", meaning: "Dün", example: "Where were you yesterday?" }
+          ],
+          grammarPoints: [
+            {
+              title: "Past Simple Tense (Geçmiş Zaman)",
+              explanation: "Used to describe completed actions in the past. Regular verbs add '-ed'. Irregular verbs have unique forms (e.g., eat -> ate, buy -> bought). Use 'did' for questions and 'didn't' for negatives.",
+              turkishNote: "Geçmişte bitmiş eylemler. Soru ve olumsuzlarda fiil yalın haline döner çünkü 'did / didn't' yardımcı fiili geçmiş zamanı üstlenir.",
+              examples: [
+                { english: "I watched a good movie yesterday.", turkish: "Dün güzel bir film izledim." },
+                { english: "She went to Paris last summer.", turkish: "Geçen yaz Paris'e gitti." },
+                { english: "Did you buy the newspaper?", turkish: "Gazeteyi satın aldın mı?" }
+              ]
+            },
+            {
+              title: "Comparatives and Superlatives (Karşılaştırmalar)",
+              explanation: "Use comparative adjectives to compare two things. Short adjectives: add '-er' (taller). Long adjectives: use 'more' (more beautiful). Use 'than' after comparatives. Superlatives describe the extreme (tallest, most beautiful).",
+              turkishNote: "İki şeyi kıyaslarken comparative kullanırız. Tek hecelilerde sıfatın sonuna '-er', çok hecelilerde sıfatın başına 'more' gelir.",
+              examples: [
+                { english: "My new car is faster than my old one.", turkish: "Yeni arabam eskisinden daha hızlı." },
+                { english: "English is easier than Japanese.", turkish: "İngilizce Japonca'dan daha kolaydır." },
+                { english: "Tokyo is the largest city in the world.", turkish: "Tokyo dünyadaki en büyük şehirdir." }
+              ]
+            },
+            {
+              title: "Future Plan: 'Be Going To' (Gelecek Zaman Planları)",
+              explanation: "Used to talk about future plans, intentions, or strong predictions based on evidence. Structure: subject + am/is/are + going to + verb.",
+              turkishNote: "Önceden planlanmış, kararlaştırılmış gelecek zaman eylemleri. Türkçe'deki '-ecek/-acak' (planlı) ekine karşılık gelir.",
+              examples: [
+                { english: "I am going to study English tonight.", turkish: "Bu akşam İngilizce çalışacağım (planlı)." },
+                { english: "They are going to buy a new house.", turkish: "Yeni bir ev satın alacaklar." },
+                { english: "Look at the dark clouds! It is going to rain.", turkish: "Koyu bulutlara bak! Yağmur yağacak (kanıt var)." }
+              ]
+            }
+          ],
+          exercises: [
+            {
+              id: "ex3_1",
+              type: "multiple-choice",
+              question: "Choose the correct past form: We ___ (go) to the beach last Sunday.",
+              options: ["go", "goes", "went", "goed"],
+              answer: "went",
+              explanation: "'go' is an irregular verb; its past simple form is 'went'. (Geçen Pazar sahile gittik.)"
+            },
+            {
+              id: "ex3_2",
+              type: "fill-in-the-blank",
+              question: "Complete the comparative: Gold is ___ (expensive) than silver.",
+              answer: "more expensive",
+              explanation: "'expensive' is a long adjective, so we use 'more expensive than'. (Altın gümüşten daha pahalıdır.)"
+            },
+            {
+              id: "ex3_3",
+              type: "word-order",
+              question: "Arrange the words: [going to / next month / they / buy / are / a new car]",
+              words: ["they", "are", "going to", "buy", "a new car", "next month"],
+              answer: "they are going to buy a new car next month",
+              explanation: "Future plan: Subject + are + going to + verb + object + time expression. (Gelecek ay yeni bir araba satın alacaklar.)"
+            }
+          ],
+          speaking: [
+            {
+              id: "sp3_1",
+              prompt: "What did you do last weekend? Describe your activities in the past tense.",
+              sampleAnswer: "Last weekend, I woke up late on Saturday. I cooked breakfast, cleaned my apartment, and met my friends in the afternoon. We drank coffee and talked. On Sunday, I stayed at home and rested.",
+              translation: "Geçen hafta sonu, Cumartesi günü geç uyandım. Kahvaltı hazırladım, dairemi temizledim ve öğleden sonra arkadaşlarımla buluştum. Kahve içip sohbet ettik. Pazar günü evde kalıp dinlendim.",
+              grammarNote: "Pay close attention to irregular past verbs (woke, cooked, cleaned, met, drank, stayed)."
+            },
+            {
+              id: "sp3_2",
+              prompt: "Compare your current city to another city you visited in the past.",
+              sampleAnswer: "I live in Istanbul. Istanbul is much bigger and more crowded than Izmir. However, Izmir is quieter, cleaner, and closer to the sea. The weather in Izmir is usually warmer than in Istanbul.",
+              translation: "İstanbul'da yaşıyorum. İstanbul, İzmir'den çok daha büyük ve kalabalık. Ancak, İzmir daha sakin, daha temiz ve denize daha yakın. İzmir'de hava genellikle İstanbul'dan daha sıcaktır.",
+              grammarNote: "Use comparatives (bigger, more crowded, quieter, cleaner, warmer) followed by 'than'."
+            }
+          ]
+        }
+      ]
+    };
+
+    const grammarLibrary = [
+      {
+        topic: "Pronouns (Zamirler)",
+        level: "A1",
+        description: "Subject, Object, and Possessive pronouns and adjectives.",
+        explanation: `
+          Pronouns are words that replace nouns. In English, we use different pronouns depending on their role in the sentence.
+          <br><br>
+          <table>
+            <thead>
+              <tr>
+                <th>Subject (Özne)</th>
+                <th>Object (Nesne)</th>
+                <th>Possessive Adj (İyelik Sıf.)</th>
+                <th>Possessive Pronoun (İyelik Zam.)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>I (Ben)</td><td>me (beni/bana)</td><td>my (benim)</td><td>mine (benimki)</td></tr>
+              <tr><td>You (Sen)</td><td>you (seni/sana)</td><td>your (senin)</td><td>yours (seninki)</td></tr>
+              <tr><td>He (O - Erkek)</td><td>him (onu/ona)</td><td>his (onun)</td><td>his (onunki)</td></tr>
+              <tr><td>She (O - Kadın)</td><td>her (onu/ona)</td><td>her (onun)</td><td>hers (onunki)</td></tr>
+              <tr><td>It (O - Cansız/Hayvan)</td><td>it (onu/ona)</td><td>its (onun)</td><td>-</td></tr>
+              <tr><td>We (Biz)</td><td>us (bizi/bize)</td><td>our (bizim)</td><td>ours (bizimki)</td></tr>
+              <tr><td>They (Onlar)</td><td>them (onları/onlara)</td><td>their (onların)</td><td>theirs (onlarınki)</td></tr>
+            </tbody>
+          </table>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> İyelik sıfatlarından (my, your, his) sonra mutlaka bir isim gelmelidir (my book). İyelik zamirlerinden (mine, yours, his) sonra ise isim gelmez (This book is mine = Bu kitap benimkidir).</span>
+        `,
+        examples: [
+          { english: "She loves her dog. It follows her everywhere.", turkish: "O köpeğini çok seviyor. Köpek onu her yerde takip eder." },
+          { english: "Is this car yours? No, mine is blue.", turkish: "Bu araba senin mi? Hayır, benimki mavi." }
+        ]
+      },
+      {
+        topic: "Present Simple (Geniş Zaman)",
+        level: "A1",
+        description: "For facts, habits, and daily routines.",
+        explanation: `
+          Use the Present Simple tense for things that are generally true, habits, or scheduled routines.
+          <br><br>
+          <strong>Structure:</strong>
+          <ul>
+            <li><strong>Positive:</strong> Subject + Verb (add -s/-es for He/She/It)</li>
+            <li><strong>Negative:</strong> Subject + don't/doesn't + Verb (base form)</li>
+            <li><strong>Question:</strong> Do/Does + Subject + Verb (base form)?</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> 'Does' veya 'doesn't' kullanılan cümlelerde, fiilin sonundaki '-s' takısı düşer. (He likes milk -> Does he like milk? / He doesn't like milk).</span>
+        `,
+        examples: [
+          { english: "Water boils at 100 degrees Celsius.", turkish: "Su 100 santigrat derecede kaynar." },
+          { english: "They do not live here anymore.", turkish: "Artık burada yaşamıyorlar." },
+          { english: "Does he play soccer?", turkish: "O futbol oynar mı?" }
+        ]
+      },
+      {
+        topic: "Present Continuous (Şimdiki Zaman)",
+        level: "A1-A2",
+        description: "For actions happening right now.",
+        explanation: `
+          Use the Present Continuous for actions happening at the moment of speaking or for temporary situations.
+          <br><br>
+          <strong>Structure:</strong>
+          <ul>
+            <li><strong>Positive:</strong> Subject + am/is/are + Verb-ing</li>
+            <li><strong>Negative:</strong> Subject + am not/isn't/aren't + Verb-ing</li>
+            <li><strong>Question:</strong> Am/Is/Are + Subject + Verb-ing?</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> Bazı fiiller (love, like, hate, want, know, understand, believe) durum bildirdiği için genellikle şimdiki zaman eki '-ing' almazlar. Bunlara 'stative verbs' denir. 'I am knowing' yerine 'I know' denir.</span>
+        `,
+        examples: [
+          { english: "Listen! Somebody is playing the piano.", turkish: "Dinle! Biri piyano çalıyor." },
+          { english: "I am studying English at the moment.", turkish: "Şu anda İngilizce çalışıyorum." }
+        ]
+      },
+      {
+        topic: "Past Simple (Geçmiş Zaman)",
+        level: "A2",
+        description: "Completed actions in the past.",
+        explanation: `
+          Use the Past Simple to talk about actions that started and finished in the past. We often use time expressions like *yesterday*, *last week*, *two years ago*.
+          <br><br>
+          <strong>Structure:</strong>
+          <ul>
+            <li><strong>Regular Verbs:</strong> add -ed (work -> worked, stay -> stayed, smile -> smiled)</li>
+            <li><strong>Irregular Verbs:</strong> change completely (go -> went, see -> saw, buy -> bought)</li>
+            <li><strong>Negative:</strong> Subject + didn't + Verb (base form)</li>
+            <li><strong>Question:</strong> Did + Subject + Verb (base form)?</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> Geçmiş zaman sorularında veya olumsuzlarında 'did' kullanıldığı için ana fiil geçmiş zaman takısı almaz, yalın (1. hal) kalır. (I saw him -> I didn't see him -> Did you see him?).</span>
+        `,
+        examples: [
+          { english: "We visited our grandparents last Sunday.", turkish: "Geçen Pazar büyükbabamları ziyaret ettik." },
+          { english: "Did you go out last night?", turkish: "Dün gece dışarı çıktın mı?" },
+          { english: "She didn't write the report.", turkish: "Raporu yazmadı." }
+        ]
+      },
+      {
+        topic: "Future: Will vs. Going To (Gelecek Zaman)",
+        level: "A2",
+        description: "Spontaneous decisions (will) vs. planned actions (going to).",
+        explanation: `
+          We have two primary ways to express the future at A2 level:
+          <br><br>
+          <strong>1. Will (Spontaneous/Prediction):</strong>
+          <ul>
+            <li>Decisions made at the moment of speaking (instant decision).</li>
+            <li>Opinions or predictions without direct evidence.</li>
+            <li>Offers, promises, and requests.</li>
+          </ul>
+          <strong>2. Be Going To (Planned/Evidence):</strong>
+          <ul>
+            <li>Decisions made *before* the moment of speaking (prior plans).</li>
+            <li>Predictions based on strong physical evidence right now.</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> Garsona sipariş verirken 'will' kullanırız (I will have a coke, please). Akşamki sinema planımızı söylerken ise 'going to' kullanırız (I am going to watch a movie tonight).</span>
+        `,
+        examples: [
+          { english: "The phone is ringing. I will answer it.", turkish: "Telefon çalıyor. Ben bakarım. (Anlık karar)" },
+          { english: "We are going to visit my uncle tomorrow.", turkish: "Yarın amcamı ziyaret edeceğiz. (Planlı)" },
+          { english: "Look at that driver! He is going to crash.", turkish: "Şu sürücüye bak! Kaza yapacak. (Kanıt var)" }
+        ]
+      },
+      {
+        topic: "Nouns & Articles (İsimler ve Tanımlayıcılar)",
+        level: "A1-A2",
+        description: "Countable/Uncountable nouns, a/an, and the.",
+        explanation: `
+          English nouns are divided into Countable (we can count them, like books, apples) and Uncountable (we cannot count them, like water, rice, information).
+          <br><br>
+          <strong>Articles:</strong>
+          <ul>
+            <li><strong>A / An:</strong> Used with singular, countable nouns when speaking generally or for the first time. (Use 'an' before vowel sounds: an apple, an hour).</li>
+            <li><strong>The:</strong> Used when both speaker and listener know exactly which specific noun is being discussed.</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> Türkçe'de olmayan 'the' (belirli tanımlayıcı) konusu önemlidir. Bahsedilen şey biliniyorsa 'the' kullanılır. Örneğin: 'Give me a book' (Bana herhangi bir kitap ver) vs. 'Give me the book' (Bana [masadaki/bildiğimiz] o kitabı ver).</span>
+        `,
+        examples: [
+          { english: "Would you like a cup of tea? (countable container, general)", turkish: "Bir fincan çay ister misiniz?" },
+          { english: "I need some information. (uncountable - never plural)", turkish: "Biraz bilgiye ihtiyacım var." },
+          { english: "The sun is hot today. (unique object)", turkish: "Bugün güneş çok sıcak." }
+        ]
+      },
+      {
+        topic: "Comparatives & Superlatives (Karşılaştırma)",
+        level: "A2",
+        description: "Comparing two things, or describing the extreme.",
+        explanation: `
+          To compare two objects, people, or concepts:
+          <br><br>
+          <strong>Comparative Rules:</strong>
+          <ul>
+            <li>Short adjectives (1 syllable): add '-er' + than (fast -> faster than)</li>
+            <li>Adjectives ending in -y: change y to 'ier' + than (happy -> happier than)</li>
+            <li>Long adjectives (2+ syllables): use 'more' + adjective + than (more expensive than)</li>
+            <li>Irregulars: good -> better, bad -> worse, far -> further</li>
+          </ul>
+          <strong>Superlative Rules (comparing 3+ things):</strong>
+          <ul>
+            <li>Short: the + adjective-est (the fastest)</li>
+            <li>Ending in -y: the + adjective-iest (the happiest)</li>
+            <li>Long: the + most + adjective (the most expensive)</li>
+            <li>Irregulars: the best, the worst, the furthest</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> Karşılaştırma yaparken 'than' (den/dan eki) kelimesini unutmayın. (Taller than me = Benden daha uzun).</span>
+        `,
+        examples: [
+          { english: "This box is heavier than that one.", turkish: "Bu kutu diğerinden daha ağır." },
+          { english: "She is the most intelligent student in the class.", turkish: "O, sınıftaki en zeki öğrencidir." }
+        ]
+      },
+      {
+        topic: "Modals: Can, Should, Must (Yardımcı Fiiller)",
+        level: "A2",
+        description: "Ability (can), advice (should), and obligation (must / have to).",
+        explanation: `
+          Modals are helping verbs that express functions like ability, duty, or suggestions. They are always followed by a verb in its base form.
+          <br><br>
+          <strong>Common Modals at A1/A2:</strong>
+          <ul>
+            <li><strong>Can / Can't:</strong> Ability or permission. (I can swim.)</li>
+            <li><strong>Should / Shouldn't:</strong> Giving advice, suggestions. (You should sleep early.)</li>
+            <li><strong>Must:</strong> Personal, strong obligation. (I must finish this.)</li>
+            <li><strong>Have to / Has to:</strong> External rule or necessity. (We have to wear a uniform.)</li>
+            <li><strong>Don't have to:</strong> No necessity. (You don't have to cook; I bought food.)</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> 'Mustn't' (yasak - yapmamalısın) ile 'Don't have to' (zorunda değilsin - yapsan da olur yapmasan da) anlam farkına dikkat edin. 'You mustn't smoke' = Sigara içmen yasaktır. 'You don't have to work' = Çalışmak zorunda değilsin.</span>
+        `,
+        examples: [
+          { english: "You should study hard for your exam.", turkish: "Sınavın için sıkı çalışmalısın (tavsiye)." },
+          { english: "We must protect our planet.", turkish: "Gezegenimizi korumalıyız (güçlü içsel gereklilik)." },
+          { english: "You don't have to pay now.", turkish: "Şimdi ödemek zorunda değilsiniz (isteğe bağlı)." }
+        ]
+      },
+      {
+        topic: "Prepositions of Time & Place (Edatlar)",
+        level: "A1-A2",
+        description: "Using 'in', 'on', and 'at' correctly.",
+        explanation: `
+          Prepositions show relationships in time or location.
+          <br><br>
+          <strong>1. Prepositions of Time:</strong>
+          <ul>
+            <li><strong>At:</strong> Specific times, points (at 5:00, at noon, at night, at the weekend).</li>
+            <li><strong>On:</strong> Days of the week, dates (on Monday, on October 25th, on Christmas Day).</li>
+            <li><strong>In:</strong> Longer periods like months, years, seasons, centuries (in May, in 2026, in summer, in the morning).</li>
+          </ul>
+          <strong>2. Prepositions of Place:</strong>
+          <ul>
+            <li><strong>At:</strong> Specific points, addresses, events (at the door, at school, at a concert).</li>
+            <li><strong>On:</strong> Surfaces, public transport, floors (on the table, on the bus, on the first floor).</li>
+            <li><strong>In:</strong> Enclosed spaces, countries, cities (in the box, in Turkey, in London).</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> Türkçe'de '-de/-da' ekiyle karşıladığımız bu edatlar İngilizce'de ayrı kurallara bağlıdır. Geniş zaman dilimleri için 'in', daha dar ve yüzeyler için 'on', nokta atışı yer ve zamanlar için 'at' kullanılır.</span>
+        `,
+        examples: [
+          { english: "Our meeting is at 2:00 PM on Friday in July.", turkish: "Toplantımız Temmuz ayında Cuma günü saat 14:00'te." },
+          { english: "The book is on the table in my bedroom.", turkish: "Kitap, yatak odamdaki masanın üzerinde." }
+        ]
+      },
+      {
+        topic: "Conjunctions: And, But, Because, So (Bağlaçlar)",
+        level: "A1-A2",
+        description: "Linking words to connect clauses and ideas.",
+        explanation: `
+          Conjunctions join two clauses or words together to create compound sentences.
+          <br><br>
+          <strong>Common Conjunctions:</strong>
+          <ul>
+            <li><strong>And (Ve):</strong> Adds information. (I bought bread and cheese.)</li>
+            <li><strong>But (Ama / Fakat):</strong> Shows contrast or conflict. (I want to go, but I am tired.)</li>
+            <li><strong>Because (Çünkü):</strong> Gives a reason. (I stayed home because it was raining.)</li>
+            <li><strong>So (Bu yüzden):</strong> Shows a result. (It was raining, so I stayed home.)</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> 'Because' sebep belirtir (neden?), 'so' ise sonuç belirtir (ne oldu?). Birbirlerinin tam zıttı yönlerde bağ kurarlar. (I was sick because I ate cold food vs. I ate cold food so I was sick).</span>
+        `,
+        examples: [
+          { english: "He worked very hard, so he passed the test.", turkish: "Çok sıkı çalıştı, bu yüzden sınavı geçti." },
+          { english: "I like milk but my sister prefers juice.", turkish: "Ben süt severim ama kız kardeşim meyve suyunu tercih eder." }
+        ]
+      }
+    ];
+
+    const conditionalTensesContent = {
+      title: "Tenses for Conditionals Masterclass (Koşul Cümleleri için Zamanlar)",
+      duration: "10 mins",
+      intro: `To master English conditionals (koşul cümleleri), you must first master the specific tenses that they rely on. Conditionals represent cause-and-effect relationships: "If X happens, Y will happen."
+      <br><br>
+      The primary tenses and structures used in conditionals are:
+      <ol>
+        <li><strong>Present Simple (Geniş Zaman):</strong> Used in the 'If' clause for Type 0 and Type 1. (e.g., If you <strong>heat</strong> ice...)</li>
+        <li><strong>Present Continuous (Şimdiki Geniş Zaman):</strong> Can be used in 'If' clauses for ongoing actions. (e.g., If you <strong>are looking</strong> for him...)</li>
+        <li><strong>Future with Will (Gelecek Zaman):</strong> Used in the 'Result' clause of Type 1. (e.g., ...it <strong>will melt</strong>.)</li>
+        <li><strong>Past Simple (Geçmiş Zaman):</strong> Used in the 'If' clause of Type 2 (imaginary situations). (e.g., If I <strong>won</strong> the lottery...)</li>
+        <li><strong>Would + Verb:</strong> Used in the 'Result' clause of Type 2. (e.g., ...I <strong>would buy</strong> a yacht.)</li>
+      </ol>
+      <br>
+      <span class="turkish-note">💡 <strong>Türkçe Notu:</strong> Koşul cümlelerinde temel kural: 'If' kelimesinin bulunduğu yarım cümlede (koşul kısmı) asla 'Will' kullanılmaz! (If it will rain -> YANLIŞ, If it rains -> DOĞRU).</span>
+      <br><br>
+      <strong>Speaking Drills (12 Questions):</strong> Practice speaking in these tenses. Speak your answer aloud using the microphone, then listen to the sample answer and check the grammar explanation.`,
+      questions: [
+        {
+          id: "ct_1",
+          tense: "Present Simple (Geniş Zaman)",
+          focus: "General Fact / Habits (Type 0 Condition)",
+          question: "What happens if you leave butter in the sun? (Tereyağını güneşte bırakırsan ne olur?)",
+          explanation: "Use the Present Simple in both parts because it is a universal scientific fact. ('leave' and 'melts')",
+          sampleAnswer: "If you leave butter in the sun, it melts quickly because of the heat.",
+          translation: "Tereyağını güneşte bırakırsan, ısıdan dolayı hızlıca erir.",
+          turkishNote: "Genel gerçekler için her iki tarafta da Geniş Zaman (Present Simple) kullanılır. 'It' öznesi olduğu için 'melts' fiiline -s ekledik."
+        },
+        {
+          id: "ct_2",
+          tense: "Present Simple (Geniş Zaman)",
+          focus: "Daily routines and responses",
+          question: "What do you do if you feel very tired after work? (İşten sonra çok yorgun hissedersen ne yaparsın?)",
+          explanation: "Describe your personal habit. Both verbs must be in the Present Simple.",
+          sampleAnswer: "If I feel very tired after work, I usually take a warm shower and sleep early.",
+          translation: "İşten sonra çok yorgun hissedersem, genellikle ılık bir duş alırım ve erken uyurum.",
+          turkishNote: "Kendi kişisel rutinleriniz ve alışkanlıklarınız da Type 0 (Genel kural/alışkanlık) yapısına girer."
+        },
+        {
+          id: "ct_3",
+          tense: "Present Simple (Geniş Zaman)",
+          focus: "Scientific rules",
+          question: "What happens if you freeze water? (Suyu dondurursan ne olur?)",
+          explanation: "Use Present Simple. Water turns into ice.",
+          sampleAnswer: "If you freeze water, it turns into ice and expands.",
+          translation: "Suyu dondurursan, buza dönüşür ve genleşir.",
+          turkishNote: "Scientific facts (Bilimsel gerçekler) her zaman Present Simple gerektirir. 'It turns' ve 'expands' şeklinde üçüncü tekil şahıs takısı aldılar."
+        },
+        {
+          id: "ct_4",
+          tense: "Future Simple with 'Will'",
+          focus: "Real Future Possibility (Type 1 Result)",
+          question: "If it rains tomorrow, what will you do? (Yarın yağmur yağarsa ne yapacaksın?)",
+          explanation: "The 'If' clause is Present Simple ('rains'), but the result clause must use 'will' + base verb because it is a future possibility.",
+          sampleAnswer: "If it rains tomorrow, I will stay at home and watch a documentary on television.",
+          translation: "Yarın yağmur yağarsa, evde kalacağım ve televizyonda belgesel izleyeceğim.",
+          turkishNote: "'If'li kısım Present Simple (rains), diğer kısım gelecek zaman bildirdiği için 'will stay' (Future Simple) olur."
+        },
+        {
+          id: "ct_5",
+          tense: "Future Simple with 'Will'",
+          focus: "Future planning / consequences",
+          question: "What will your parents do if you pass your English exam? (İngilizce sınavını geçersen ailen ne yapacak?)",
+          explanation: "If + subject + present verb, subject + will + verb. (Type 1 structure)",
+          sampleAnswer: "If I pass my English exam, my parents will be very happy and they will buy me a present.",
+          translation: "İngilizce sınavımı geçersem, ailem çok mutlu olacak ve bana bir hediye alacaklar.",
+          turkishNote: "'My parents' çoğul olduğu için 'will be' ve 'will buy' şeklinde çekimlendi."
+        },
+        {
+          id: "ct_6",
+          tense: "Future Simple with 'Will'",
+          focus: "Promises & Predictions",
+          question: "If you have free time this evening, who will you call? (Bu akşam boş vaktin olursa kimi arayacaksın?)",
+          explanation: "Type 1 question about a future possibility tonight.",
+          sampleAnswer: "If I have free time this evening, I will call my best friend and invite her to dinner.",
+          translation: "Bu akşam boş vaktim olursa, en yakın arkadaşımı arayıp onu akşam yemeğine davet edeceğim.",
+          turkishNote: "Boş vaktin olması ihtimali gerçekçi olduğundan Type 1 'will' yapısı kullanılır."
+        },
+        {
+          id: "ct_7",
+          tense: "Past Simple (Geçmiş Zaman)",
+          focus: "Imaginary / Unreal Situation (Type 2 Condition)",
+          question: "If you had a lot of money, what would you buy? (Çok paran olsaydı ne satın alırdın?)",
+          explanation: "This is imaginary. The conditional clause uses Past Simple ('had'), and the result clause uses 'would' + base verb.",
+          sampleAnswer: "If I had a lot of money, I would buy a large house near the sea and travel around the world.",
+          translation: "Çok param olsaydı, deniz kenarında büyük bir ev satın alırdım ve dünyayı gezerdim.",
+          turkishNote: "Type 2 gerçek dışı veya hayali durumları anlatır. Koşul kısmında geçmiş zaman fiili 'had' kullanılır ama anlam şu anki zamandır. Diğer tarafta ise 'would' kullanılır."
+        },
+        {
+          id: "ct_8",
+          tense: "Past Simple (Geçmiş Zaman)",
+          focus: "Unreal identity / Advice",
+          question: "If you were the president of your country, what would you change? (Ülkenin başkanı olsaydın neyi değiştirirdin?)",
+          explanation: "Use 'were' instead of 'was' in Type 2 conditional for all subjects (If I were, If she were) to show it is purely hypothetical.",
+          sampleAnswer: "If I were the president, I would make education free and build more green parks.",
+          translation: "Başkan olsaydım, eğitimi ücretsiz yapardım ve daha fazla yeşil park inşa ederdim.",
+          turkishNote: "İngilizce'de hayali durumlarda 'I/He/She/It' özneleri ile de 'was' yerine 'were' kullanımı tercih edilir (If I were you = Senin yerinde olsaydım)."
+        },
+        {
+          id: "ct_9",
+          tense: "Past Simple (Geçmiş Zaman)",
+          focus: "Imaginary relocation",
+          question: "Where would you live if you could live anywhere in the world? (Dünyada herhangi bir yerde yaşayabilseydin nerede yaşardın?)",
+          explanation: "Conditional contains 'could' (past of can) and result contains 'would live'.",
+          sampleAnswer: "If I could live anywhere in the world, I would live in a quiet village in Switzerland.",
+          translation: "Dünyada herhangi bir yerde yaşayabilseydim, İsviçre'de sakin bir köyde yaşardım.",
+          turkishNote: "'could live' (yaşayabilseydim - yetenek/ihtimal koşulu) ve 'would live' (yaşardım) uyumu."
+        },
+        {
+          id: "ct_10",
+          tense: "Present Continuous (Şimdiki Zaman)",
+          focus: "Continuous condition in Present",
+          question: "What should you do if someone is sleeping in the library? (Kütüphanede biri uyuyorsa ne yapmalısın?)",
+          explanation: "The condition is ongoing: 'If someone is sleeping' (Present Continuous). The result can use a modal like 'should' for advice.",
+          sampleAnswer: "If someone is sleeping in the library, you should speak quietly and you should not make noise.",
+          translation: "Kütüphanede biri uyuyorsa, sessizce konuşmalısın ve gürültü yapmamalısın.",
+          turkishNote: "Koşul cümlesi illa düz Geniş Zaman olmak zorunda değil; 'şu an yapılıyor olan' bir durumsa Şimdiki Zaman da olabilir."
+        },
+        {
+          id: "ct_11",
+          tense: "Modal Verb 'Should'",
+          focus: "Advice conditional",
+          question: "What will you do if you feel sick during class? (Ders sırasında hasta hissedersen ne yapacaksın?)",
+          explanation: "If + present simple, result can express plans or rules.",
+          sampleAnswer: "If I feel sick during class, I will ask the teacher for permission and go to the hospital.",
+          translation: "Ders sırasında hasta hissedersem, öğretmenden izin isteyip hastaneye gideceğim.",
+          turkishNote: "Gerçekleşmesi muhtemel durum. Present Simple (feel) ve Future (will ask... and go) uyumu."
+        },
+        {
+          id: "ct_12",
+          tense: "Past Perfect (Miş'li Geçmiş Zaman)",
+          focus: "Past Regret / Unreal Past (Type 3 - Preview)",
+          question: "If you had studied harder last year, would you have passed the advanced exam? (Geçen yıl daha sıkı çalışsaydın ileri düzey sınavı geçer miydin?)",
+          explanation: "This is a Type 3 conditional (unreal past, regrets). Structure: If + Past Perfect ('had studied'), result uses 'would have' + V3 (past participle).",
+          sampleAnswer: "Yes, if I had studied harder last year, I would have passed the advanced exam easily.",
+          translation: "Evet, geçen yıl daha sıkı çalışsaydım, ileri düzey sınavı kolayca geçerdim.",
+          turkishNote: "Geçmişe dair gerçekleşmemiş hayaller veya pişmanlıklar için kullanılır. Koşulda Past Perfect (had V3), sonuçta would have V3 kullanılır."
+        }
+      ]
+    };
+
+    const ifClausesContent = {
+      title: "Deep Dive: If Clauses Type 0 & Type 1 (Koşul Cümleleri Tip 0 ve Tip 1)",
+      intro: `Conditionals (Koşul Cümleleri), İngilizce'de bir olayın gerçekleşmesinin başka bir olaya bağlı olduğu durumları ifade etmek için kullanılır. 
+      Genellikle iki cümlecikten oluşurlar:
+      <br>
+      1. <strong>Condition (If) Clause:</strong> Koşul cümlesi ("Eğer ..." kısmı)
+      <br>
+      2. <strong>Result (Main) Clause:</strong> Sonuç cümlesi ("... olacak/olur" kısmı)
+      <br><br>
+      Cümlenin sırası önemli değildir:
+      <br>
+      • <em>If it rains, we stay home.</em> (If başta ise araya virgül koyulur)
+      <br>
+      • <em>We stay home if it rains.</em> (If ortada ise virgül koyulmaz)`,
+      
+      type0: {
+        title: "If Clause Type 0: General Truths & Habits (Genel Gerçekler ve Alışkanlıklar)",
+        explanation: `
+          Type 0 conditional is used when the result of the condition is <strong>always true</strong> or <strong>always happens</strong>. Think of it as natural laws, scientific facts, and automatic personal habits.
+          <br><br>
+          <h4>Grammar Structure (Dilbilgisi Yapısı):</h4>
+          <div class="grammar-formula">
+            <strong>If + Present Simple (Geniş Zaman), [comma] + Present Simple (Geniş Zaman)</strong>
+          </div>
+          <br>
+          <h4>When to Use (Ne Zaman Kullanılır):</h4>
+          <ul>
+            <li><strong>Scientific Facts (Bilimsel Gerçekler):</strong> Physics, chemistry, or nature laws.</li>
+            <li><strong>General Rules (Genel Kurallar):</strong> Instructions or static facts.</li>
+            <li><strong>Personal Routines (Kişisel Alışkanlıklar):</strong> Things you always do under certain conditions.</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Açıklama:</strong> Tip 0 cümlelerinde her iki taraf da Geniş Zaman (Present Simple) ile kurulur. Çünkü bu durumlar olasılık değil, kesin kurallardır. Türkçeye çevirirken "-se/-sa ... -er/-ar" (Örn: Suyu ısıtırsan kaynar) şeklinde çevrilir. Bu yapıda 'If' yerine genellikle 'When' (olduğu zaman) de kullanılabilir çünkü sonuç %100 kesindir.</span>
+        `,
+        examples: [
+          {
+            english: "If you heat ice, it melts.",
+            turkish: "Buzu ısıtırsan erir.",
+            note: "Scientific fact (100% true). Heat = Present Simple, melts = Present Simple."
+          },
+          {
+            english: "If you mix red and blue, you get purple.",
+            turkish: "Kırmızı ve maviyi karıştırırsan mor elde edersin.",
+            note: "Color physics rule."
+          },
+          {
+            english: "If I drink coffee late at night, I do not sleep well.",
+            turkish: "Gece geç saatte kahve içersem iyi uyuyamam.",
+            note: "Personal physical habit."
+          },
+          {
+            english: "Plants die if they do not get water.",
+            turkish: "Bitkiler su almazlarsa ölürler.",
+            note: "Nature law. Note that 'if' is in the middle, so no comma is used."
+          },
+          {
+            english: "If the temperature drops below zero, water freezes.",
+            turkish: "Sıcaklık sıfırın altına düşerse su donar.",
+            note: "Scientific fact."
+          }
+        ]
+      },
+
+      type1: {
+        title: "If Clause Type 1: Real Future Possibilities (Gerçek Gelecek İhtimalleri)",
+        explanation: `
+          Type 1 conditional is used to describe a <strong>possible future condition</strong> and its <strong>probable result</strong>. It is not a guaranteed fact, but it is very likely to happen in the future under the right conditions.
+          <br><br>
+          <h4>Grammar Structure (Dilbilgisi Yapısı):</h4>
+          <div class="grammar-formula">
+            <strong>If + Present Simple (Geniş Zaman), [comma] + Will + Verb (Yalın Fiil)</strong>
+          </div>
+          <br>
+          <h4>When to Use (Ne Zaman Kullanılır):</h4>
+          <ul>
+            <li><strong>Future Plans & Threats (Gelecek Planları & Tehditler):</strong> If X happens, I will do Y.</li>
+            <li><strong>Warnings (Uyarılar):</strong> Warning someone about the consequence of their actions.</li>
+            <li><strong>Predictions (Tahminler):</strong> Real-life consequences based on current events.</li>
+          </ul>
+          <br>
+          <span class="turkish-note">💡 <strong>Türkçe Açıklama:</strong> Tip 1 yapısında 'If'li cümle yine Geniş Zaman (Present Simple) ile kurulurken, sonuç cümlesi Gelecek Zaman (Will + fiilin yalın hali) ile kurulur. Çünkü gelecekteki olası bir durumdan bahsediyoruz. Türkçeye çevirirken "-se/-sa ... -ecek/-acak" (Örn: Çalışırsan geçeceksin) şeklinde çevrilir.</span>
+          <br><br>
+          <strong>Alternative Modals in Result:</strong> Instead of 'will', you can also use 'can' (permission/ability) or 'should' (advice) in the result clause:
+          <ul>
+            <li><em>If you finish your homework, you <strong>can</strong> play video games.</em></li>
+            <li><em>If you go to London, you <strong>should</strong> visit the British Museum.</em></li>
+          </ul>
+        `,
+        examples: [
+          {
+            english: "If I study hard, I will pass the exam.",
+            turkish: "Eğer sıkı çalışırsam, sınavı geçeceğim.",
+            note: "Future possibility. Study = Present Simple, will pass = Future."
+          },
+          {
+            english: "If it is sunny tomorrow, we will have a picnic.",
+            turkish: "Yarın hava güneşli olursa, piknik yapacağız.",
+            note: "Weather prediction and plan."
+          },
+          {
+            english: "If you do not hurry, you will miss the train.",
+            turkish: "Acele etmezsen treni kaçıracaksın.",
+            note: "Warning. Negative present (do not hurry) -> future result (will miss)."
+          },
+          {
+            english: "I will call you if I arrive early.",
+            turkish: "Erken varırsam seni arayacağım.",
+            note: "Future plan. 'If' in the middle, so no comma."
+          },
+          {
+            english: "If she goes to the store, she will buy some milk.",
+            turkish: "Markete giderse biraz süt alacak.",
+            note: "Probable activity."
+          }
+        ]
+      },
+
+      comparison: {
+        title: "Type 0 vs. Type 1: Key Differences (Temel Farklar)",
+        explanation: `
+          It is easy to mix these two. Here is how to distinguish them clearly:
+          <br><br>
+          <table>
+            <thead>
+              <tr>
+                <th>Aspect</th>
+                <th>Type 0 (Genel Gerçek)</th>
+                <th>Type 1 (Gelecek Olasılığı)</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Certainty (Kesinlik)</strong></td>
+                <td>100% certain. Natural law or constant rule.</td>
+                <td>Possible and likely, but not 100% guaranteed.</td>
+              </tr>
+              <tr>
+                <td><strong>Time Focus (Zaman)</strong></td>
+                <td>General (All time - past, present, future).</td>
+                <td>Specific future event.</td>
+              </tr>
+              <tr>
+                <td><strong>Formula (Formül)</strong></td>
+                <td>If + Present Simple, Present Simple</td>
+                <td>If + Present Simple, Will + Verb</td>
+              </tr>
+              <tr>
+                <td><strong>Example Comparison</strong></td>
+                <td>
+                  <em>If you touch fire, you get burned.</em><br>
+                  (Ateşe dokunursan yanarsın - her zaman, fiziksel kural)
+                </td>
+                <td>
+                  <em>If you touch that wire, you will get hurt.</em><br>
+                  (Şu kabloya dokunursan canın yanacak - belirli bir durum/uyarı)
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        `
+      },
+
+      exercises: [
+        {
+          id: "if_ex_1",
+          type: "multiple-choice",
+          question: "If you heat water to 100 degrees, it ___ (boil).",
+          options: ["boils", "will boil", "boiled", "is boiling"],
+          answer: "boils",
+          explanation: "This is a scientific law (Type 0). We use Present Simple in the result clause: 'boils'."
+        },
+        {
+          id: "if_ex_2",
+          type: "multiple-choice",
+          question: "If she ___ (arrive) late tonight, we will start the meeting without her.",
+          options: ["arrive", "arrives", "will arrive", "arrived"],
+          answer: "arrives",
+          explanation: "'If' clauses never use 'will'. Since it is Type 1 and the subject is 'she', we use Present Simple third person: 'arrives'."
+        },
+        {
+          id: "if_ex_3",
+          type: "multiple-choice",
+          question: "We ___ (go) to the beach if the weather is warm this weekend.",
+          options: ["go", "will go", "goes", "went"],
+          answer: "will go",
+          explanation: "This describes a specific future plan based on a condition (Type 1). The result clause uses 'will go'."
+        },
+        {
+          id: "if_ex_4",
+          type: "multiple-choice",
+          question: "If you mix blue and yellow, you ___ green.",
+          options: ["get", "will get", "got", "gets"],
+          answer: "get",
+          explanation: "Type 0 (General fact / color mixing). Result is in Present Simple: 'get'."
+        },
+        {
+          id: "if_ex_5",
+          type: "multiple-choice",
+          question: "If I don't feel well tomorrow, I ___ (stay) in bed.",
+          options: ["stay", "will stay", "stayed", "stays"],
+          answer: "will stay",
+          explanation: "Type 1. A prediction/plan for tomorrow. Result uses 'will stay'."
+        },
+        {
+          id: "if_ex_6",
+          type: "fill-in-the-blank",
+          question: "Complete the Type 1 sentence: If you drop that glass, it ___ (break).",
+          answer: "will break",
+          explanation: "Type 1 warning about a specific event. The result clause needs 'will + base verb'."
+        },
+        {
+          id: "if_ex_7",
+          type: "fill-in-the-blank",
+          question: "Complete the Type 0 sentence: If babies are hungry, they ___ (cry).",
+          answer: "cry",
+          explanation: "Type 0 general truth. Babies always cry when hungry. Use Present Simple plural: 'cry'."
+        },
+        {
+          id: "if_ex_8",
+          type: "word-order",
+          question: "Arrange into a Type 1 sentence: [if / we / will / miss / don't / run / the train / ,]",
+          words: ["if", "we", "don't", "run", ",", "we", "will", "miss", "the train"],
+          answer: "if we don't run , we will miss the train",
+          explanation: "Structure: If + negative present simple, comma, subject + will + verb + object. (Eğer koşmazsak treni kaçıracağız.)"
+        },
+        {
+          id: "if_ex_9",
+          type: "word-order",
+          question: "Arrange into a Type 0 sentence: [gets / ice / melt / when / it / warm / .]",
+          words: ["ice", "melts", "when", "it", "gets", "warm"],
+          answer: "ice melts when it gets warm",
+          explanation: "Type 0 using 'when' instead of 'if'. Subject + verb, when + subject + verb. (Buz ısındığında erir.)"
+        },
+        {
+          id: "if_ex_10",
+          type: "multiple-choice",
+          question: "Identify the type and correctness: 'If it will snow, we will go skiing.'",
+          options: ["Correct Type 1", "Incorrect - 'will' cannot be in the 'If' clause", "Correct Type 0", "Incorrect - both verbs should be past tense"],
+          answer: "Incorrect - 'will' cannot be in the 'If' clause",
+          explanation: "You must never put 'will' inside the 'If' clause. The correct sentence is 'If it snows, we will go skiing.'"
+        }
+      ]
+    };
+
+    window.eslContent = {
+      courseContent,
+      grammarLibrary,
+      conditionalTensesContent,
+      ifClausesContent
+    };
+
+    // ==========================================
+    // 2. INTERACTIVE APP LOGIC
+    // ==========================================
+
+    let currentTab = 'dashboard';
+    let currentSubtab = 'if-intro';
+    let selectedCoursePhaseExerciseAnswers = {}; 
+    let wordOrderAnswers = {}; 
+    let userProgress = {
+      phase1: {},
+      phase2: {},
+      phase3: {},
+      tenses: {},
+      ifClauses: {},
+      grammarLib: {}
+    };
+
+    // Class size and teacher state settings
+    let currentFontSize = 15;
+    let showTurkishNotesState = true;
+    let showTeacherModeState = false;
+
+    let audioCtx = null;
+    function playTone(freq, type, duration) {
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        
+        osc.type = type || 'sine';
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        
+        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+        
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+      } catch (e) {
+        console.warn("Audio synthesis blocked", e);
+      }
+    }
+
+    function playSuccessSound() {
+      playTone(523.25, 'sine', 0.15); // C5
+      setTimeout(() => playTone(659.25, 'sine', 0.25), 100); // E5
+    }
+
+    function playFailureSound() {
+      playTone(180, 'triangle', 0.3); // Low buzzer
+    }
+
+    function playMicBeep(start) {
+      if (start) {
+        playTone(880, 'sine', 0.1); 
+      } else {
+        playTone(880, 'sine', 0.05);
+        setTimeout(() => playTone(880, 'sine', 0.05), 80);
+      }
+    }
+
+    function speakText(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        
+        const voices = window.speechSynthesis.getVoices();
+        const englishVoice = voices.find(v => v.lang.startsWith('en-US') && v.name.includes('Google')) || 
+                            voices.find(v => v.lang.startsWith('en-US')) || 
+                            voices.find(v => v.lang.startsWith('en'));
+        if (englishVoice) {
+          utterance.voice = englishVoice;
+        }
+        utterance.rate = 0.85; // Easy listening rate
+        window.speechSynthesis.speak(utterance);
+      } else {
+        alert("Text-to-Speech is not fully supported in this browser.");
+      }
+    }
+
+    // Initialize Page
+    document.addEventListener("DOMContentLoaded", () => {
+      lucide.createIcons();
+      
+      document.querySelectorAll(".nav-item").forEach(item => {
+        item.addEventListener("click", () => {
+          switchTab(item.getAttribute("data-tab"));
+        });
+      });
+
+      document.querySelectorAll(".sub-tab").forEach(tab => {
+        tab.addEventListener("click", () => {
+          switchSubtab(tab.getAttribute("data-subtab"));
+        });
+      });
+
+      // Load Notepad text from localStorage
+      const savedNotes = localStorage.getItem("aura_esl_student_notes");
+      if (savedNotes) {
+        document.getElementById("student-notepad").value = savedNotes;
+      }
+
+      renderCoursePhases();
+      renderConditionalTensesIndex();
+      renderIfClausesPages();
+      renderGrammarLibraryIndex();
+      updateProgress();
+    });
+
+    // Theme Toggle
+    function toggleTheme() {
+      document.body.classList.toggle("light-theme");
+      showToast("Theme switched successfully!");
+    }
+
+    // Accessibility Font Changer
+    function changeFontSize(action) {
+      if (action === 'increase' && currentFontSize < 24) currentFontSize += 1;
+      if (action === 'decrease' && currentFontSize > 12) currentFontSize -= 1;
+      document.body.style.fontSize = currentFontSize + 'px';
+      showToast(`Text size set to ${currentFontSize}px`);
+    }
+
+    // Toggle Turkish Translation Notes
+    function toggleTurkishNotes() {
+      showTurkishNotesState = !showTurkishNotesState;
+      const notes = document.querySelectorAll(".turkish-note");
+      const btn = document.getElementById("btn-toggle-tr-notes");
+      const statusSpan = document.getElementById("tr-notes-status");
+
+      if (showTurkishNotesState) {
+        notes.forEach(note => note.classList.remove("hidden-note"));
+        btn.classList.add("active");
+        statusSpan.innerText = "Turkish: ON";
+        showToast("Turkish notes enabled");
+      } else {
+        notes.forEach(note => note.classList.add("hidden-note"));
+        btn.classList.remove("active");
+        statusSpan.innerText = "Turkish: OFF";
+        showToast("Turkish notes hidden");
+      }
+    }
+
+    // Toggle Teacher Instructions Panel Mode
+    function toggleTeacherMode() {
+      showTeacherModeState = !showTeacherModeState;
+      const btn = document.getElementById("btn-toggle-teacher-mode");
+      const notes = document.querySelectorAll(".teacher-note");
+
+      if (showTeacherModeState) {
+        btn.classList.add("active");
+        notes.forEach(n => n.classList.add("active"));
+        showToast("👩‍🏫 Teacher Mode Enabled!");
+      } else {
+        btn.classList.remove("active");
+        notes.forEach(n => n.classList.remove("active"));
+        showToast("Student Mode active");
+      }
+    }
+
+    // Toast Alert notification helper
+    function showToast(message) {
+      const toast = document.getElementById("toast-notification");
+      toast.innerText = message;
+      toast.classList.add("show");
+      setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2000);
+    }
+
+    // Floating Notepad toggle
+    function toggleNotepad() {
+      const notepad = document.getElementById("notepad-container");
+      notepad.classList.toggle("active");
+    }
+
+    function saveStudentNotes() {
+      const text = document.getElementById("student-notepad").value;
+      localStorage.setItem("aura_esl_student_notes", text);
+      
+      const indicator = document.getElementById("notepad-save-indicator");
+      indicator.style.display = "flex";
+      setTimeout(() => {
+        indicator.style.display = "none";
+      }, 1500);
+    }
+
+    function exportNotes() {
+      const text = document.getElementById("student-notepad").value;
+      if (!text.trim()) {
+        alert("Notepad is empty! Type something first.");
+        return;
+      }
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "AuraESL_Student_Notes.txt";
+      link.click();
+      showToast("Notes exported successfully!");
+    }
+
+    // Routing controller
+    function switchTab(tabId) {
+      currentTab = tabId;
+      
+      document.querySelectorAll(".nav-item").forEach(item => {
+        if (item.getAttribute("data-tab") === tabId) {
+          item.classList.add("active");
+        } else {
+          item.classList.remove("active");
+        }
+      });
+
+      document.querySelectorAll(".tab-screen").forEach(screen => {
+        if (screen.id === `tab-${tabId}`) {
+          screen.classList.add("active");
+        } else {
+          screen.classList.remove("active");
+        }
+      });
+
+      let title = "Dashboard";
+      if (tabId === 'course-phase1') title = "Phase 1: A1 Foundations";
+      if (tabId === 'course-phase2') title = "Phase 2: A1-A2 Transition";
+      if (tabId === 'course-phase3') title = "Phase 3: A2 Level Consolidation";
+      if (tabId === 'conditional-tenses') title = "Tenses for Conditionals";
+      if (tabId === 'if-clauses') title = "If Clause Type 0 & 1";
+      if (tabId === 'grammar-library') title = "A1/A2 Grammar Reference Library";
+      
+      document.getElementById("page-title").innerText = title;
+      document.querySelector(".main-content").scrollTop = 0;
+    }
+
+    function switchSubtab(subtabId) {
+      currentSubtab = subtabId;
+      
+      document.querySelectorAll(".sub-tab").forEach(tab => {
+        if (tab.getAttribute("data-subtab") === subtabId) {
+          tab.classList.add("active");
+        } else {
+          tab.classList.remove("active");
+        }
+      });
+
+      document.querySelectorAll(".subtab-content").forEach(content => {
+        if (content.id === `subtab-${subtabId}`) {
+          content.classList.add("active");
+        } else {
+          content.classList.remove("active");
+        }
+      });
+    }
+
+    // Render course views
+    function renderCoursePhases() {
+      const { phases } = window.eslContent.courseContent;
+      
+      phases.forEach(phase => {
+        const container = document.getElementById(`${phase.id}-container`);
+        if (!container) return;
+        
+        let html = `
+          <div class="lesson-header-card">
+            <span class="badge" style="background: rgba(139,92,246,0.1); color: var(--accent-purple); padding: 4px 8px; border-radius: 4px; font-weight:700; font-size:11px;">
+              ⏱️ ${phase.duration} • ${phase.difficulty}
+            </span>
+            <h2 style="margin-top: 8px;">${phase.title}</h2>
+            <p>${phase.intro}</p>
+          </div>
+          
+          <!-- Teacher Note -->
+          <div class="teacher-note" data-teacher-point="${phase.id}-plan">
+            <strong>👩‍🏫 Classroom Lesson Plan for ${phase.id.toUpperCase()}:</strong>
+            <ul>
+              <li>Explain key vocabulary items. Ask students to click and flip the interactive flashcards below.</li>
+              <li>Read the core grammar box, calling on different students to read the English and Turkish example structures.</li>
+              <li>Conduct the interactive exercises dynamically. You can display this page on the projector and solve them together.</li>
+            </ul>
+          </div>
+
+          <div class="lesson-grid">
+            <!-- Vocabulary Flashcard Grid -->
+            <div>
+              <h3 class="card-group-title"><i data-lucide="book"></i> Essential Vocabulary (Flashcards)</h3>
+              <p style="color:var(--text-muted); font-size:12.5px; margin-bottom:12px;">Click a card below to flip it and reveal the Turkish translation and example sentence.</p>
+              <div class="vocab-cards-grid">
+                ${phase.vocabulary.map(v => `
+                  <div class="vocab-card" onclick="this.classList.toggle('flipped')">
+                    <div class="vocab-card-inner">
+                      <div class="vocab-card-front">
+                        <span class="word">${v.word}</span>
+                        <span class="hint">Click to flip</span>
+                      </div>
+                      <div class="vocab-card-back">
+                        <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
+                          <span class="meaning">${v.meaning}</span>
+                          <button class="btn-tts" style="padding:2px 6px; font-size:10px;" onclick="event.stopPropagation(); speakText('${v.word}')">🗣️</button>
+                        </div>
+                        <span class="example">"${v.example}"</span>
+                      </div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Grammar Lessons Section -->
+            <div>
+              <h3 class="card-group-title"><i data-lucide="award"></i> Core Grammar Points (Dilbilgisi)</h3>
+              <div class="grammar-container">
+                ${phase.grammarPoints.map((g, idx) => `
+                  <div class="grammar-block">
+                    <h5>${idx + 1}. ${g.title}</h5>
+                    <p style="font-size:14px; color: var(--text-main);">${g.explanation}</p>
+                    <span class="turkish-note" style="margin: 10px 0 5px 0;">💡 <strong>Türkçe Açıklama:</strong> ${g.turkishNote}</span>
+                    <div class="grammar-examples">
+                      <span style="font-size: 12px; font-weight:700; color: var(--text-muted);">EXAMPLES:</span>
+                      ${g.examples.map(ex => `
+                        <div class="example-item">
+                          <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="example-eng">${ex.english}</span>
+                            <button class="btn-tts" style="padding:3px 6px; font-size:10px;" onclick="speakText('${ex.english.replace(/'/g, "\\'")}')">🗣️ Listen</button>
+                          </div>
+                          <div class="example-tr">${ex.turkish}</div>
+                        </div>
+                      `).join('')}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Interactive Quizzes Section -->
+            <div>
+              <h3 class="card-group-title"><i data-lucide="edit-3"></i> Interactive Exercises (Alıştırmalar)</h3>
+              <div class="exercises-container">
+                ${phase.exercises.map((ex, idx) => renderExerciseCard(ex, phase.id, idx)).join('')}
+              </div>
+            </div>
+
+            <!-- Interactive Speaking Section -->
+            <div>
+              <h3 class="card-group-title"><i data-lucide="mic"></i> Speaking Practice (Konuşma Pratiği)</h3>
+              <p style="color: var(--text-muted); margin-bottom: 12px; font-size:13.5px;">Click the microphone to simulate recording yourself. After completion, check the sample answer and hear the correct pronunciation.</p>
+              <div class="speaking-exercises-container" style="display: flex; flex-direction: column; gap: 20px;">
+                ${phase.speaking.map((sp, idx) => renderSpeakingCard(sp, phase.id, idx)).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+        
+        container.innerHTML = html;
+      });
+
+      // Synchronize visibility of Turkish notes dynamically
+      if (!showTurkishNotesState) {
+        document.querySelectorAll(".turkish-note").forEach(note => note.classList.add("hidden-note"));
+      }
+      
+      lucide.createIcons();
+    }
+
+    function renderExerciseCard(ex, phaseId, index) {
+      let cardHtml = `
+        <div class="exercise-card" id="card-${ex.id}">
+          <div class="exercise-question">
+            <span style="color: var(--accent-purple); font-weight:700; margin-right:8px;">Q${index + 1}.</span>${ex.question}
+          </div>
+      `;
+
+      if (ex.type === "multiple-choice") {
+        cardHtml += `
+          <div class="options-list">
+            ${ex.options.map(opt => `
+              <button class="option-btn" onclick="selectCourseExerciseOption('${phaseId}', '${ex.id}', '${opt}', this)">
+                ${opt}
+              </button>
+            `).join('')}
+          </div>
+          <button class="btn btn-secondary" style="align-self: flex-start;" onclick="checkCourseExerciseMC('${phaseId}', '${ex.id}')">Submit Answer</button>
+        `;
+      } else if (ex.type === "fill-in-the-blank") {
+        cardHtml += `
+          <div class="input-answer-container">
+            <input type="text" class="input-answer" placeholder="Type your answer here..." id="input-${ex.id}">
+            <button class="btn btn-secondary" onclick="checkCourseExerciseInput('${phaseId}', '${ex.id}')">Check</button>
+          </div>
+        `;
+      } else if (ex.type === "word-order") {
+        wordOrderAnswers[ex.id] = [];
+        cardHtml += `
+          <div class="word-puzzle">
+            <div class="puzzle-slots" id="slots-${ex.id}" onclick="clearWordPuzzle('${ex.id}')">
+              <span class="text-muted" style="font-size:13px; pointer-events:none;">Click words below to arrange them. Click box to clear.</span>
+            </div>
+            <div class="puzzle-words">
+              ${shuffleArray([...ex.words]).map((word, wIdx) => `
+                <span class="word-pill" id="pill-${ex.id}-${wIdx}" onclick="clickWordPuzzleWord('${ex.id}', '${word}', ${wIdx})">${word}</span>
+              `).join('')}
+            </div>
+            <button class="btn btn-secondary" style="align-self: flex-start;" onclick="checkCourseExerciseWordOrder('${phaseId}', '${ex.id}')">Verify Sentence</button>
+          </div>
+        `;
+      }
+
+      cardHtml += `
+          <div class="exercise-feedback" id="feedback-${ex.id}"></div>
+        </div>
+      `;
+      return cardHtml;
+    }
+
+    function renderSpeakingCard(sp, phaseId, index) {
+      return `
+        <div class="feature-card" style="background: rgba(255,255,255,0.015);">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <span style="font-weight:700; color: var(--accent-blue); font-size:14px;">SPEAKING DRILL #${index + 1}</span>
+            <span class="badge" style="background: rgba(59,130,246,0.1); color: var(--accent-blue); border:1px solid rgba(59,130,246,0.2); font-size:11px; padding: 2px 6px; border-radius:4px;">${sp.grammarNote}</span>
+          </div>
+          <p class="bold" style="font-size:15px; margin-top:8px;">${sp.prompt}</p>
+          
+          <div class="speaking-recording-area" style="padding: 20px; margin-top:12px; background: rgba(0,0,0,0.15);">
+            <div class="mic-btn-container" id="mic-container-${sp.id}">
+              <button class="mic-btn" onclick="simulateSpeakingRecording('${phaseId}', '${sp.id}')" id="mic-${sp.id}">
+                <i data-lucide="mic" style="width:28px; height:28px;"></i>
+              </button>
+              <div class="recording-ripple" id="ripple-${sp.id}"></div>
+            </div>
+            <div class="speaking-status" id="status-${sp.id}">Click microphone to record your answer</div>
+            <div class="audio-waves" id="waves-${sp.id}">
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+            </div>
+          </div>
+
+          <div class="speaking-comparison hidden" id="compare-${sp.id}">
+            <div class="comparison-header">
+              <span class="comparison-title">✨ Recommended Model Answer:</span>
+              <button class="btn-tts" onclick="speakText('${sp.sampleAnswer.replace(/'/g, "\\'")}')">
+                <i data-lucide="volume-2" style="width:14px; height:14px;"></i> Listen Pronunciation
+              </button>
+            </div>
+            <div class="sample-answer-text">${sp.sampleAnswer}</div>
+            <div class="sample-translation"><strong>Türkçe Çeviri:</strong> ${sp.translation}</div>
+            <div class="turkish-note" style="margin: 8px 0 0 0; font-size:12.5px;">💡 <strong>Gramer İpucu:</strong> ${sp.grammarNote}</div>
+          </div>
+        </div>
+      `;
+    }
+
+    function selectCourseExerciseOption(phaseId, exerciseId, optionText, element) {
+      selectedCoursePhaseExerciseAnswers[exerciseId] = optionText;
+      const parent = element.parentElement;
+      parent.querySelectorAll(".option-btn").forEach(btn => {
+        btn.classList.remove("selected");
+      });
+      element.classList.add("selected");
+    }
+
+    function checkCourseExerciseMC(phaseId, exerciseId) {
+      const { phases } = window.eslContent.courseContent;
+      const phase = phases.find(p => p.id === phaseId);
+      const exercise = phase.exercises.find(e => e.id === exerciseId);
+      const selectedAnswer = selectedCoursePhaseExerciseAnswers[exerciseId];
+      
+      const feedbackEl = document.getElementById(`feedback-${exerciseId}`);
+      const cardEl = document.getElementById(`card-${exerciseId}`);
+      
+      if (!selectedAnswer) {
+        alert("Please select an answer first!");
+        return;
+      }
+
+      cardEl.querySelectorAll(".option-btn").forEach(btn => {
+        btn.classList.remove("correct", "incorrect");
+      });
+
+      if (selectedAnswer === exercise.answer) {
+        playSuccessSound();
+        feedbackEl.innerHTML = `<strong>Correct! (Doğru!)</strong> ${exercise.explanation}`;
+        feedbackEl.className = "exercise-feedback correct";
+        
+        cardEl.querySelectorAll(".option-btn").forEach(btn => {
+          if (btn.innerText.trim() === exercise.answer) {
+            btn.classList.add("correct");
+          }
+        });
+
+        userProgress[phaseId][exerciseId] = true;
+        updateProgress();
+      } else {
+        playFailureSound();
+        feedbackEl.innerHTML = `<strong>Incorrect! (Yanlış!)</strong> Try again. Hint: ${exercise.explanation}`;
+        feedbackEl.className = "exercise-feedback incorrect";
+
+        cardEl.querySelectorAll(".option-btn").forEach(btn => {
+          if (btn.innerText.trim() === selectedAnswer) {
+            btn.classList.add("incorrect");
+          }
+        });
+      }
+    }
+
+    function checkCourseExerciseInput(phaseId, exerciseId) {
+      const { phases } = window.eslContent.courseContent;
+      const phase = phases.find(p => p.id === phaseId);
+      const exercise = phase.exercises.find(e => e.id === exerciseId);
+      const inputVal = document.getElementById(`input-${exerciseId}`).value.trim();
+      const feedbackEl = document.getElementById(`feedback-${exerciseId}`);
+      
+      if (!inputVal) {
+        alert("Please type your answer!");
+        return;
+      }
+
+      if (inputVal.toLowerCase() === exercise.answer.toLowerCase()) {
+        playSuccessSound();
+        feedbackEl.innerHTML = `<strong>Correct! (Doğru!)</strong> ${exercise.explanation}`;
+        feedbackEl.className = "exercise-feedback correct";
+        
+        userProgress[phaseId][exerciseId] = true;
+        updateProgress();
+      } else {
+        playFailureSound();
+        feedbackEl.innerHTML = `<strong>Incorrect! (Yanlış!)</strong> You wrote: "${inputVal}". Keep trying!`;
+        feedbackEl.className = "exercise-feedback incorrect";
+      }
+    }
+
+    function clickWordPuzzleWord(exerciseId, word, wordIdx) {
+      const pillEl = document.getElementById(`pill-${exerciseId}-${wordIdx}`);
+      if (pillEl.classList.contains("used")) return;
+      
+      wordOrderAnswers[exerciseId].push({ word, index: wordIdx });
+      pillEl.classList.add("used");
+      renderWordPuzzleSlots(exerciseId);
+    }
+
+    function clearWordPuzzle(exerciseId) {
+      wordOrderAnswers[exerciseId] = [];
+      const puzzleEl = document.getElementById(`card-${exerciseId}`);
+      puzzleEl.querySelectorAll(".word-pill").forEach(pill => {
+        pill.classList.remove("used");
+      });
+      renderWordPuzzleSlots(exerciseId);
+    }
+
+    function renderWordPuzzleSlots(exerciseId) {
+      const slotsEl = document.getElementById(`slots-${exerciseId}`);
+      const list = wordOrderAnswers[exerciseId];
+      
+      if (list.length === 0) {
+        slotsEl.innerHTML = `<span class="text-muted" style="font-size:13px; pointer-events:none;">Click words below to arrange them. Click box to clear.</span>`;
+      } else {
+        slotsEl.innerHTML = list.map(item => `
+          <span class="word-pill" style="background:var(--accent-purple); border-color:transparent; color:white;">${item.word}</span>
+        `).join('');
+      }
+    }
+
+    function checkCourseExerciseWordOrder(phaseId, exerciseId) {
+      const { phases } = window.eslContent.courseContent;
+      const phase = phases.find(p => p.id === phaseId);
+      const exercise = phase.exercises.find(e => e.id === exerciseId);
+      const userList = wordOrderAnswers[exerciseId];
+      const userSentence = userList.map(i => i.word).join(" ");
+      const feedbackEl = document.getElementById(`feedback-${exerciseId}`);
+      
+      if (userList.length === 0) {
+        alert("Please arrange the words first!");
+        return;
+      }
+
+      const normUser = userSentence.replace(/\s+/g, ' ').trim().toLowerCase();
+      const normCorrect = exercise.answer.replace(/\s+/g, ' ').trim().toLowerCase();
+
+      if (normUser === normCorrect) {
+        playSuccessSound();
+        feedbackEl.innerHTML = `<strong>Correct Sentence! (Doğru Cümle!)</strong> ${exercise.explanation}`;
+        feedbackEl.className = "exercise-feedback correct";
+        
+        userProgress[phaseId][exerciseId] = true;
+        updateProgress();
+      } else {
+        playFailureSound();
+        feedbackEl.innerHTML = `<strong>Try again!</strong> Your structure: "${userSentence}". Check the word order rule.`;
+        feedbackEl.className = "exercise-feedback incorrect";
+      }
+    }
+
+    function simulateSpeakingRecording(tabGroup, speakingId) {
+      const micEl = document.getElementById(`mic-${speakingId}`);
+      const statusEl = document.getElementById(`status-${speakingId}`);
+      const wavesEl = document.getElementById(`waves-${speakingId}`);
+      const rippleEl = document.getElementById(`ripple-${speakingId}`);
+      const compareEl = document.getElementById(`compare-${speakingId}`);
+
+      if (micEl.classList.contains("recording")) {
+        stopMockRecording(tabGroup, speakingId, micEl, statusEl, wavesEl, rippleEl, compareEl);
+      } else {
+        playMicBeep(true);
+        micEl.classList.add("recording");
+        rippleEl.style.display = 'block';
+        wavesEl.classList.add("active");
+        
+        let secondsLeft = 4;
+        statusEl.innerHTML = `🔴 Recording... Speak now! (${secondsLeft}s)`;
+        
+        const interval = setInterval(() => {
+          secondsLeft--;
+          if (secondsLeft <= 0) {
+            clearInterval(interval);
+            if (micEl.classList.contains("recording")) {
+              stopMockRecording(tabGroup, speakingId, micEl, statusEl, wavesEl, rippleEl, compareEl);
+            }
+          } else {
+            statusEl.innerHTML = `🔴 Recording... Speak now! (${secondsLeft}s)`;
+          }
+        }, 1000);
+        
+        micEl.dataset.intervalId = interval;
+      }
+    }
+
+    function stopMockRecording(tabGroup, speakingId, micEl, statusEl, wavesEl, rippleEl, compareEl) {
+      if (micEl.dataset.intervalId) {
+        clearInterval(parseInt(micEl.dataset.intervalId));
+      }
+      
+      playMicBeep(false);
+      micEl.classList.remove("recording");
+      rippleEl.style.display = 'none';
+      wavesEl.classList.remove("active");
+      
+      statusEl.innerHTML = `💚 Recording saved! Check the recommended answer below.`;
+      compareEl.classList.remove("hidden");
+      compareEl.style.animation = "fadeIn 0.4s ease-out forwards";
+      
+      userProgress[tabGroup][speakingId] = true;
+      updateProgress();
+    }
+
+    function renderConditionalTensesIndex() {
+      const { questions, intro } = window.eslContent.conditionalTensesContent;
+      document.getElementById("ct-intro-text").innerHTML = intro;
+      
+      const listEl = document.getElementById("ct-question-list");
+      listEl.innerHTML = questions.map((q, idx) => `
+        <button class="list-item" id="ct-item-${q.id}" onclick="selectConditionalTenseQuestion('${q.id}')">
+          <span class="item-title">${idx + 1}. ${q.tense}</span>
+          <span class="item-sub">${q.focus}</span>
+        </button>
+      `).join('');
+    }
+
+    function selectConditionalTenseQuestion(qId) {
+      const { questions } = window.eslContent.conditionalTensesContent;
+      const q = questions.find(item => item.id === qId);
+      if (!q) return;
+
+      document.querySelectorAll("#ct-question-list .list-item").forEach(item => {
+        item.classList.remove("active");
+      });
+      document.getElementById(`ct-item-${qId}`).classList.add("active");
+
+      const panelEl = document.getElementById("ct-speaking-panel");
+      panelEl.innerHTML = `
+        <div class="speaking-console">
+          <div class="speaking-heading">
+            <span class="badge">${q.tense}</span>
+            <h3 style="margin-top: 8px;">Conditional Tense Practice</h3>
+            <p style="color: var(--text-muted); font-size:13px; margin-top:2px;">Focus: ${q.focus}</p>
+          </div>
+
+          <div class="speaking-prompt-box">
+            <h4>QUESTION PROMPT:</h4>
+            <div class="speaking-prompt-text">${q.question}</div>
+          </div>
+
+          <div class="speaking-recording-area">
+            <div class="mic-btn-container">
+              <button class="mic-btn" onclick="simulateSpeakingRecording('tenses', '${q.id}')" id="mic-${q.id}">
+                <i data-lucide="mic" style="width:28px; height:28px;"></i>
+              </button>
+              <div class="recording-ripple" id="ripple-${q.id}"></div>
+            </div>
+            <div class="speaking-status" id="status-${q.id}">Click microphone to record your voice answer</div>
+            <div class="audio-waves" id="waves-${q.id}">
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+            </div>
+          </div>
+
+          <div class="speaking-comparison hidden" id="compare-${q.id}">
+            <div class="comparison-header">
+              <span class="comparison-title">✨ Ideal Speaking Model Answer:</span>
+              <button class="btn-tts" onclick="speakText('${q.sampleAnswer.replace(/'/g, "\\'")}')">
+                <i data-lucide="volume-2" style="width:14px; height:14px;"></i> Listen Pronunciation
+              </button>
+            </div>
+            <div class="sample-answer-text">${q.sampleAnswer}</div>
+            <div class="sample-translation"><strong>Türkçe Çeviri:</strong> ${q.translation}</div>
+            
+            <span class="turkish-note" style="margin: 10px 0 0 0; font-size:13px;">
+              💡 <strong>Gramer Analizi (Türkçe Not):</strong> ${q.turkishNote}
+              <br><br>
+              <em>Grammar Rule:</em> ${q.explanation}
+            </span>
+          </div>
+        </div>
+      `;
+
+      // Hide or show Turkish explanation dynamically in the newly generated block
+      if (!showTurkishNotesState) {
+        panelEl.querySelectorAll(".turkish-note").forEach(n => n.classList.add("hidden-note"));
+      }
+      
+      lucide.createIcons();
+    }
+
+    function renderIfClausesPages() {
+      const { intro, type0, type1, comparison, exercises } = window.eslContent.ifClausesContent;
+      
+      document.getElementById("subtab-if-intro").innerHTML = `
+        <div class="feature-card" style="margin-bottom:24px;">
+          <h2>Understanding Conditionals (Koşul Cümleleri Giriş)</h2>
+          <p style="margin-top:10px; font-size:15px;">${intro}</p>
+        </div>
+        
+        <div class="grid-layout">
+          <div class="feature-card pointer" onclick="switchSubtab('if-type0')">
+            <div class="card-icon">⚙️</div>
+            <h3>If Clause Type 0</h3>
+            <p>Scientific facts, laws of nature, and constant truths. Always true.</p>
+            <strong style="color:var(--accent-purple); font-size:13px;">If + Present Simple, Present Simple</strong>
+          </div>
+          <div class="feature-card pointer" onclick="switchSubtab('if-type1')">
+            <div class="card-icon">🚀</div>
+            <h3>If Clause Type 1</h3>
+            <p>Real-life future predictions, consequences, promises, or threats.</p>
+            <strong style="color:var(--accent-blue); font-size:13px;">If + Present Simple, Will + Verb</strong>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("subtab-if-type0").innerHTML = `
+        <div class="lesson-header-card" style="margin-bottom:24px;">
+          <h2>${type0.title}</h2>
+          <div style="margin-top:12px;">${type0.explanation}</div>
+        </div>
+        
+        <h3 class="section-title">Type 0 Examples (Örnek Cümleler)</h3>
+        <div class="lesson-grid">
+          ${type0.examples.map(ex => `
+            <div class="grammar-block">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="example-eng" style="font-size:16px; color: var(--accent-purple);">${ex.english}</span>
+                <button class="btn-tts" style="padding:4px 8px; font-size:11px;" onclick="speakText('${ex.english.replace(/'/g, "\\'")}')">🗣️ Speak</button>
+              </div>
+              <div class="example-tr" style="font-size:14px; margin-top:4px;">${ex.turkish}</div>
+              <div style="color:var(--text-muted); font-size:12px; margin-top:6px; font-style:italic;">Note: ${ex.note}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      document.getElementById("subtab-if-type1").innerHTML = `
+        <div class="lesson-header-card" style="margin-bottom:24px;">
+          <h2>${type1.title}</h2>
+          <div style="margin-top:12px;">${type1.explanation}</div>
+        </div>
+        
+        <h3 class="section-title">Type 1 Examples (Örnek Cümleler)</h3>
+        <div class="lesson-grid">
+          ${type1.examples.map(ex => `
+            <div class="grammar-block" style="border-left-color: var(--accent-blue);">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span class="example-eng" style="font-size:16px; color: var(--accent-blue);">${ex.english}</span>
+                <button class="btn-tts" style="padding:4px 8px; font-size:11px;" onclick="speakText('${ex.english.replace(/'/g, "\\'")}')">🗣️ Speak</button>
+              </div>
+              <div class="example-tr" style="font-size:14px; margin-top:4px;">${ex.turkish}</div>
+              <div style="color:var(--text-muted); font-size:12px; margin-top:6px; font-style:italic;">Note: ${ex.note}</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      document.getElementById("subtab-if-comparison").innerHTML = `
+        <div class="feature-card">
+          <h2>${comparison.title}</h2>
+          <div style="margin-top:12px;">${comparison.explanation}</div>
+        </div>
+      `;
+
+      const quizContainer = document.getElementById("if-quiz-questions");
+      quizContainer.innerHTML = exercises.map((ex, idx) => renderExerciseCard(ex, 'ifClauses', idx)).join('');
+      
+      // Ensure Turkish notes sync
+      if (!showTurkishNotesState) {
+        document.querySelectorAll(".subtab-content .turkish-note").forEach(n => n.classList.add("hidden-note"));
+      }
+
+      lucide.createIcons();
+    }
+
+    function gradeIfQuiz() {
+      const { exercises } = window.eslContent.ifClausesContent;
+      let correctCount = 0;
+      
+      exercises.forEach(ex => {
+        let userAns = "";
+        if (ex.type === "multiple-choice") {
+          userAns = selectedCoursePhaseExerciseAnswers[ex.id] || "";
+        } else if (ex.type === "fill-in-the-blank") {
+          userAns = document.getElementById(`input-${ex.id}`).value.trim();
+        } else if (ex.type === "word-order") {
+          userAns = wordOrderAnswers[ex.id].map(i => i.word).join(" ");
+        }
+
+        const feedbackEl = document.getElementById(`feedback-${ex.id}`);
+        const cardEl = document.getElementById(`card-${ex.id}`);
+        
+        const normUser = userAns.replace(/\s+/g, ' ').trim().toLowerCase();
+        const normCorrect = ex.answer.replace(/\s+/g, ' ').trim().toLowerCase();
+        
+        if (normUser === normCorrect && normCorrect !== "") {
+          correctCount++;
+          feedbackEl.innerHTML = `<strong>Correct!</strong> ${ex.explanation}`;
+          feedbackEl.className = "exercise-feedback correct";
+          
+          if (ex.type === "multiple-choice") {
+            cardEl.querySelectorAll(".option-btn").forEach(btn => {
+              if (btn.innerText.trim() === ex.answer) btn.classList.add("correct");
+            });
+          }
+          userProgress.ifClauses[ex.id] = true;
+        } else {
+          feedbackEl.innerHTML = `<strong>Incorrect!</strong> Correct answer is: <span class="bold">${ex.answer}</span>. <br>${ex.explanation}`;
+          feedbackEl.className = "exercise-feedback incorrect";
+          
+          if (ex.type === "multiple-choice" && userAns !== "") {
+            cardEl.querySelectorAll(".option-btn").forEach(btn => {
+              if (btn.innerText.trim() === userAns) btn.classList.add("incorrect");
+              if (btn.innerText.trim() === ex.answer) btn.classList.add("correct");
+            });
+          }
+        }
+      });
+
+      const resultEl = document.getElementById("if-quiz-result");
+      resultEl.classList.remove("hidden");
+      
+      if (correctCount >= 8) {
+        playSuccessSound();
+        resultEl.innerHTML = `
+          <h3 style="color: var(--color-success)">🎉 Outstanding Job!</h3>
+          <p style="margin-top:6px;">You got <strong>${correctCount} / 10</strong> questions correct. You have mastered If Clause Type 0 & 1!</p>
+        `;
+      } else {
+        playFailureSound();
+        resultEl.innerHTML = `
+          <h3 style="color: var(--color-warning)">📚 Review & Try Again</h3>
+          <p style="margin-top:6px;">You got <strong>${correctCount} / 10</strong> correct. Read through the structural comparison tabs and try again to improve your score.</p>
+        `;
+      }
+      
+      updateProgress();
+      resultEl.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function renderGrammarLibraryIndex() {
+      const listEl = document.getElementById("grammar-topics-list");
+      listEl.innerHTML = window.eslContent.grammarLibrary.map((g, idx) => `
+        <button class="list-item" id="grammar-item-${idx}" onclick="selectGrammarTopic(${idx})">
+          <span class="item-title">${g.topic}</span>
+          <span class="item-sub">Level: ${g.level}</span>
+        </button>
+      `).join('');
+    }
+
+    function selectGrammarTopic(idx) {
+      const g = window.eslContent.grammarLibrary[idx];
+      if (!g) return;
+
+      document.querySelectorAll("#grammar-topics-list .list-item").forEach(item => {
+        item.classList.remove("active");
+      });
+      document.getElementById(`grammar-item-${idx}`).classList.add("active");
+
+      userProgress.grammarLib[idx] = true;
+      updateProgress();
+
+      const panelEl = document.getElementById("grammar-article-panel");
+      panelEl.innerHTML = `
+        <div class="lib-detail-card">
+          <span class="badge">Level ${g.level} Topic</span>
+          <h2>${g.topic}</h2>
+          <p style="color: var(--text-muted); font-size:14px; margin-bottom:20px;">${g.description}</p>
+          
+          <div style="font-size:14.5px; line-height:1.7;">
+            ${g.explanation}
+          </div>
+
+          <h4 class="section-title" style="margin-top:32px;">Practice Examples (Örnekler)</h4>
+          <div class="lesson-grid">
+            ${g.examples.map(ex => `
+              <div class="grammar-block">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <span class="example-eng" style="font-size:15px; color: var(--accent-purple);">${ex.english}</span>
+                  <button class="btn-tts" style="padding:4px 8px; font-size:11px;" onclick="speakText('${ex.english.replace(/'/g, "\\'")}')">🗣️ Speak</button>
+                </div>
+                <div class="example-tr" style="font-size:13.5px; margin-top:6px;">${ex.turkish}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+
+      if (!showTurkishNotesState) {
+        panelEl.querySelectorAll(".turkish-note").forEach(n => n.classList.add("hidden-note"));
+      }
+      
+      lucide.createIcons();
+    }
+
+    function resetAllProgress() {
+      if (confirm("Are you sure you want to reset all progress? This is helpful when restarting a classroom session.")) {
+        userProgress = {
+          phase1: {},
+          phase2: {},
+          phase3: {},
+          tenses: {},
+          ifClauses: {},
+          grammarLib: {}
+        };
+        
+        // Reset interactive MC styles and slots
+        selectedCoursePhaseExerciseAnswers = {};
+        wordOrderAnswers = {};
+        
+        // Re-render
+        renderCoursePhases();
+        renderConditionalTensesIndex();
+        renderIfClausesPages();
+        renderGrammarLibraryIndex();
+        updateProgress();
+        
+        // Reset subtabs
+        switchTab('dashboard');
+        switchSubtab('if-intro');
+        
+        showToast("Progress successfully reset!");
+      }
+    }
+
+    function updateProgress() {
+      const { phases } = window.eslContent.courseContent;
+      const tensesQuestions = window.eslContent.conditionalTensesContent.questions;
+      const ifExercises = window.eslContent.ifClausesContent.exercises;
+      const grammarLibItems = window.eslContent.grammarLibrary;
+      
+      const p1Total = phases[0].exercises.length + phases[0].speaking.length;
+      const p1Solved = Object.keys(userProgress.phase1).length;
+      const p1Percent = p1Total > 0 ? Math.round((p1Solved / p1Total) * 100) : 0;
+      document.getElementById("p1-percent").innerText = `${p1Percent}% Completed`;
+      document.getElementById("p1-bar").style.width = `${p1Percent}%`;
+
+      const p2Total = phases[1].exercises.length + phases[1].speaking.length;
+      const p2Solved = Object.keys(userProgress.phase2).length;
+      const p2Percent = p2Total > 0 ? Math.round((p2Solved / p2Total) * 100) : 0;
+      document.getElementById("p2-percent").innerText = `${p2Percent}% Completed`;
+      document.getElementById("p2-bar").style.width = `${p2Percent}%`;
+
+      const p3Total = phases[2].exercises.length + phases[2].speaking.length;
+      const p3Solved = Object.keys(userProgress.phase3).length;
+      const p3Percent = p3Total > 0 ? Math.round((p3Solved / p3Total) * 100) : 0;
+      document.getElementById("p3-percent").innerText = `${p3Percent}% Completed`;
+      document.getElementById("p3-bar").style.width = `${p3Percent}%`;
+
+      const ctTotal = tensesQuestions.length;
+      const ctSolved = Object.keys(userProgress.tenses).length;
+      const ctPercent = ctTotal > 0 ? Math.round((ctSolved / ctTotal) * 100) : 0;
+      document.getElementById("ct-percent").innerText = `${ctPercent}% Completed`;
+      document.getElementById("ct-bar").style.width = `${ctPercent}%`;
+      
+      tensesQuestions.forEach(q => {
+        const listEl = document.getElementById(`ct-item-${q.id}`);
+        if (listEl) {
+          if (userProgress.tenses[q.id]) {
+            listEl.classList.add("completed");
+          } else {
+            listEl.classList.remove("completed");
+          }
+        }
+      });
+
+      const ifTotal = ifExercises.length;
+      const ifSolved = Object.keys(userProgress.ifClauses).length;
+      const ifPercent = ifTotal > 0 ? Math.round((ifSolved / ifTotal) * 100) : 0;
+      document.getElementById("if-percent").innerText = `${ifPercent}% Completed`;
+      document.getElementById("if-bar").style.width = `${ifPercent}%`;
+
+      const libTotal = grammarLibItems.length;
+      const libSolved = Object.keys(userProgress.grammarLib).length;
+      const libPercent = libTotal > 0 ? Math.round((libSolved / libTotal) * 100) : 0;
+      document.getElementById("lib-percent").innerText = `${libPercent}% Viewed`;
+      document.getElementById("lib-bar").style.width = `${libPercent}%`;
+      
+      grammarLibItems.forEach((g, idx) => {
+        const listEl = document.getElementById(`grammar-item-${idx}`);
+        if (listEl) {
+          if (userProgress.grammarLib[idx]) {
+            listEl.classList.add("completed");
+          } else {
+            listEl.classList.remove("completed");
+          }
+        }
+      });
+
+      const totalItems = p1Total + p2Total + p3Total + ctTotal + ifTotal + libTotal;
+      const solvedItems = p1Solved + p2Solved + p3Solved + ctSolved + ifSolved + libSolved;
+      const overallPercent = totalItems > 0 ? Math.round((solvedItems / totalItems) * 100) : 0;
+      
+      document.getElementById("overall-percentage").innerText = `${overallPercent}%`;
+      document.getElementById("overall-progress-bar").style.width = `${overallPercent}%`;
+    }
+  </script>
 </body>
 </html>
