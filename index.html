@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AuraESL - Interactive A1 to A2 English Journey</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons (CDN) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="logo-area">
+        <div class="logo-icon">✨</div>
+        <span class="logo-text">AuraESL</span>
+      </div>
+      <div class="progress-widget">
+        <div class="progress-info">
+          <span>Overall Progress</span>
+          <span id="overall-percentage">0%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div id="overall-progress-bar" class="progress-bar" style="width: 0%"></div>
+        </div>
+      </div>
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard">
+          <i data-lucide="layout-dashboard"></i>
+          <span>Dashboard</span>
+        </button>
+        
+        <div class="menu-label">Interactive Lessons</div>
+        <button class="nav-item" data-tab="course-phase1">
+          <i data-lucide="compass"></i>
+          <span>Phase 1: A1 Foundations</span>
+        </button>
+        <button class="nav-item" data-tab="course-phase2">
+          <i data-lucide="git-commit"></i>
+          <span>Phase 2: Transition</span>
+        </button>
+        <button class="nav-item" data-tab="course-phase3">
+          <i data-lucide="award"></i>
+          <span>Phase 3: A2 Level</span>
+        </button>
+
+        <div class="menu-label">Conditionals Prep</div>
+        <button class="nav-item" data-tab="conditional-tenses">
+          <i data-lucide="zap"></i>
+          <span>Conditional Tenses</span>
+        </button>
+        <button class="nav-item" data-tab="if-clauses">
+          <i data-lucide="split"></i>
+          <span>If Clause Type 0 & 1</span>
+        </button>
+
+        <div class="menu-label">Reference</div>
+        <button class="nav-item" data-tab="grammar-library">
+          <i data-lucide="book-open"></i>
+          <span>Grammar Library</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <span class="footer-note">Designed for Turkish Speakers</span>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top header bar -->
+      <header class="content-header">
+        <h1 id="page-title">Dashboard</h1>
+        <div class="user-status">
+          <div class="status-badge A1">A1</div>
+          <div class="status-arrow">➡️</div>
+          <div class="status-badge A2">A2</div>
+        </div>
+      </header>
+
+      <!-- Dynamic Tab Content Screens -->
+      
+      <!-- 1. DASHBOARD -->
+      <section id="tab-dashboard" class="tab-screen active">
+        <div class="hero-card">
+          <div class="hero-content">
+            <h2>Accelerate Your English from A1 to A2</h2>
+            <p>Welcome to AuraESL! This application is designed to take you from beginner (A1) to elementary (A2) in just 30 minutes of focused interactive exercises and speaking practice. Includes detailed lessons on If Clause Type 0 and 1, with Turkish explanations to support your journey.</p>
+            <div class="hero-buttons">
+              <button class="btn btn-primary" onclick="switchTab('course-phase1')">Start Journey</button>
+              <button class="btn btn-secondary" onclick="switchTab('if-clauses')">Study If Clauses</button>
+            </div>
+          </div>
+          <div class="hero-illustration">🎯</div>
+        </div>
+
+        <h3 class="section-title">Your Progress Map</h3>
+        <div class="grid-layout">
+          <div class="feature-card pointer" onclick="switchTab('course-phase1')">
+            <div class="card-icon">🌱</div>
+            <h4>Phase 1: A1 Foundations</h4>
+            <p>Learn to introduce yourself and describe daily routines.</p>
+            <div class="card-footer-progress">
+              <span id="p1-percent">0% Done</span>
+              <div class="mini-bar"><div id="p1-bar" class="mini-fill" style="width: 0%"></div></div>
+            </div>
+          </div>
+          <div class="feature-card pointer" onclick="switchTab('course-phase2')">
+            <div class="card-icon">⚡</div>
+            <h4>Phase 2: Transition</h4>
+            <p>Understand actions happening now and simple modal 'can'.</p>
+            <div class="card-footer-progress">
+              <span id="p2-percent">0% Done</span>
+              <div class="mini-bar"><div id="p2-bar" class="mini-fill" style="width: 0%"></div></div>
+            </div>
+          </div>
+          <div class="feature-card pointer" onclick="switchTab('course-phase3')">
+            <div class="card-icon">🏆</div>
+            <h4>Phase 3: A2 Level</h4>
+            <p>Talk about past events and describe future plans.</p>
+            <div class="card-footer-progress">
+              <span id="p3-percent">0% Done</span>
+              <div class="mini-bar"><div id="p3-bar" class="mini-fill" style="width: 0%"></div></div>
+            </div>
+          </div>
+          <div class="feature-card pointer" onclick="switchTab('conditional-tenses')">
+            <div class="card-icon">🔥</div>
+            <h4>Conditionals Prep</h4>
+            <p>12 Interactive speaking drills for conditional tenses.</p>
+            <div class="card-footer-progress">
+              <span id="ct-percent">0% Done</span>
+              <div class="mini-bar"><div id="ct-bar" class="mini-fill" style="width: 0%"></div></div>
+            </div>
+          </div>
+          <div class="feature-card pointer" onclick="switchTab('if-clauses')">
+            <div class="card-icon">🔱</div>
+            <h4>If Clauses Type 0 & 1</h4>
+            <p>Learn Type 0 & 1 from scratch with detailed exercises.</p>
+            <div class="card-footer-progress">
+              <span id="if-percent">0% Done</span>
+              <div class="mini-bar"><div id="if-bar" class="mini-fill" style="width: 0%"></div></div>
+            </div>
+          </div>
+          <div class="feature-card pointer" onclick="switchTab('grammar-library')">
+            <div class="card-icon">📚</div>
+            <h4>Grammar Library</h4>
+            <p>10 Comprehensive ESL grammar topics with Turkish notes.</p>
+            <div class="card-footer-progress">
+              <span id="lib-percent">0% Viewed</span>
+              <div class="mini-bar"><div id="lib-bar" class="mini-fill" style="width: 0%"></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. COURSE PHASES (1, 2, 3) -->
+      <section id="tab-course-phase1" class="tab-screen">
+        <div class="lesson-layout" id="course-phase1-container">
+          <!-- Dynamically filled by app.js -->
+        </div>
+      </section>
+      
+      <section id="tab-course-phase2" class="tab-screen">
+        <div class="lesson-layout" id="course-phase2-container">
+          <!-- Dynamically filled by app.js -->
+        </div>
+      </section>
+
+      <section id="tab-course-phase3" class="tab-screen">
+        <div class="lesson-layout" id="course-phase3-container">
+          <!-- Dynamically filled by app.js -->
+        </div>
+      </section>
+
+      <!-- 3. CONDITIONAL TENSES DRILLS -->
+      <section id="tab-conditional-tenses" class="tab-screen">
+        <div class="lesson-layout">
+          <div class="lesson-header-card">
+            <h2>Tenses for Conditionals Masterclass</h2>
+            <p id="ct-intro-text"></p>
+          </div>
+          
+          <div class="interactive-split">
+            <!-- Left panel: Question Selection -->
+            <div class="side-panel">
+              <h4 class="side-title">Speaking Questions</h4>
+              <div class="item-list" id="ct-question-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+            <!-- Right panel: Interactive speaking console -->
+            <div class="display-panel" id="ct-speaking-panel">
+              <div class="empty-state">
+                <div class="empty-icon">🗣️</div>
+                <h3>Select a Speaking Question</h3>
+                <p>Choose a tense drill from the list on the left to start your speaking practice.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. IF CLAUSES TYPE 0 & 1 -->
+      <section id="tab-if-clauses" class="tab-screen">
+        <div class="lesson-layout">
+          <!-- Tab navigation inside subpage -->
+          <div class="sub-tab-nav">
+            <button class="sub-tab active" data-subtab="if-intro">Intro & Structure</button>
+            <button class="sub-tab" data-subtab="if-type0">Type 0 (General Truths)</button>
+            <button class="sub-tab" data-subtab="if-type1">Type 1 (Possibilities)</button>
+            <button class="sub-tab" data-subtab="if-comparison">Type 0 vs Type 1</button>
+            <button class="sub-tab" data-subtab="if-quiz">Interactive Quiz</button>
+          </div>
+
+          <div id="subtab-if-intro" class="subtab-content active">
+            <!-- Filled dynamically -->
+          </div>
+
+          <div id="subtab-if-type0" class="subtab-content">
+            <!-- Filled dynamically -->
+          </div>
+
+          <div id="subtab-if-type1" class="subtab-content">
+            <!-- Filled dynamically -->
+          </div>
+
+          <div id="subtab-if-comparison" class="subtab-content">
+            <!-- Filled dynamically -->
+          </div>
+
+          <div id="subtab-if-quiz" class="subtab-content">
+            <div class="quiz-container">
+              <h2>If Clause Type 0 & 1 Practice Quiz</h2>
+              <p>Test your understanding. Solve these 10 exercises. (10 soruluk testinizi çözün)</p>
+              <hr class="divider">
+              <div id="if-quiz-questions">
+                <!-- Filled dynamically -->
+              </div>
+              <button class="btn btn-primary" id="btn-submit-if-quiz" onclick="gradeIfQuiz()">Grade Quiz</button>
+              <div id="if-quiz-result" class="quiz-result-box hidden"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. GRAMMAR LIBRARY -->
+      <section id="tab-grammar-library" class="tab-screen">
+        <div class="lesson-layout">
+          <div class="interactive-split">
+            <!-- Left panel: Topics list -->
+            <div class="side-panel">
+              <h4 class="side-title">Grammar Index</h4>
+              <div class="item-list" id="grammar-topics-list">
+                <!-- Dynamically populated -->
+              </div>
+            </div>
+            <!-- Right panel: Article details -->
+            <div class="display-panel" id="grammar-article-panel">
+              <div class="empty-state">
+                <div class="empty-icon">📖</div>
+                <h3>Select a Grammar Topic</h3>
+                <p>Choose a grammar rule from the list on the left to read detailed descriptions, Turkish tips, and study examples.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Audio feedback effects -->
+  <audio id="audio-correct" src="" preload="auto"></audio>
+  <audio id="audio-incorrect" src="" preload="auto"></audio>
+
+  <!-- Load Scripts -->
+  <script src="content.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
